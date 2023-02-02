@@ -1,0 +1,146 @@
+package org.example.board;
+
+import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+/**
+ * Represents a list as a two-dimensional board of set width and height.
+ *
+ * @param <T> Element type
+ */
+public class Board<T> {
+    private final List<T> board;
+    private final int width;
+    private final int height;
+
+    /**
+     * Defines a board of {@code width} and {@code height} wrapping {@code list}.
+     *
+     * @param list List of exactly {@code width * height} size to wrap
+     * @param width Board width, non-zero positive
+     * @param height Board height, non-zero positive
+     *
+     * @throws IllegalArgumentException If {@code list.size()} is not equal to {@code width * height}
+     */
+    public Board(List<T> list, int width, int height) throws IllegalArgumentException {
+        if (
+            width <= 0
+            || height <= 0
+            || list.size() != width * height
+        ) throw new IllegalArgumentException();
+        this.width = width;
+        this.height = height;
+        this.board = list;
+    }
+
+    /**
+     * Defines a board of equal sides of {@code side} wrapping {@code list}.
+     *
+     * @param list List of exactly {@code side * side} size to wrap
+     * @param side Board side, non-zero positive
+     *
+     * @throws IllegalArgumentException If {@code list.size()} is not equal to {@code side * side}
+     */
+    public Board(List<T> list, int side) throws IllegalArgumentException {
+        this(list, side, side);
+    }
+
+    /**
+     * Maps a pair of coordinates to internal list index
+     *
+     * @param x Horizontal axis coordinate
+     * @param y Vertical axis coordinate
+     * @return Corresponding index in the internal list
+     */
+    private int linearIndex(int x, int y) {
+        return y * width + x;
+    }
+
+    /**
+     * @return Width of this board
+     */
+    public int width() {
+        return width;
+    }
+
+    /**
+     * @return Height of this board
+     */
+    public int height() {
+        return height;
+    }
+
+    /**
+     * Validates coordinates (x y).
+     *
+     * @param x Horizontal axis coordinate
+     * @param y Vertical axis coordinate
+     * @return {@code true} if (x y) points within the board, {@code false} otherwise
+     */
+    public boolean validate(int x, int y) {
+        return (
+            x >= 0 && x < width
+            && y >= 0 && y < height
+        );
+    }
+
+    /**
+     * Retrieve element at (x y).
+     *
+     * @param x Horizontal axis coordinate
+     * @param y Vertical axis coordinate
+     * @return Element at (x y)
+     *
+     * @throws IndexOutOfBoundsException If (x y) does not point within the board
+     */
+    public T get(int x, int y) throws IndexOutOfBoundsException {
+        if ( !validate(x, y) ) throw new IndexOutOfBoundsException();
+        return board.get(linearIndex(x, y));
+    }
+
+    /**
+     * Set element at (x y)
+     *
+     * @param x Horizontal axis coordinate
+     * @param y Vertical axis coordinate
+     * @param t Element to set
+     *
+     * @throws IndexOutOfBoundsException If (x y) does not point within the board
+     */
+    public void set(int x, int y, T t) {
+        if ( !validate(x, y) ) throw new IndexOutOfBoundsException();
+        board.set(linearIndex(x, y), t);
+    }
+
+    /**
+     * @return Stream of board elements
+     */
+    public Stream<T> stream() {
+        return board.stream();
+    }
+
+    /**
+     * @param y Row index
+     * @return Elements of row {@code y} in column order
+     *
+     * @throws IndexOutOfBoundsException If index is not within the board
+     */
+    public Stream<T> row(int y) throws IndexOutOfBoundsException {
+        if ( y < 0 || y >= height ) throw new IndexOutOfBoundsException();
+        return IntStream.range(0, width)
+            .mapToObj(x -> get(x, y));
+    }
+
+    /**
+     * @param x Column index
+     * @return Elements of column {@code x} in row order
+     *
+     * @throws IndexOutOfBoundsException If index is not within the board
+     */
+    public Stream<T> column(int x) throws IndexOutOfBoundsException {
+        if ( x < 0 || x >= width ) throw new IndexOutOfBoundsException();
+        return IntStream.range(0, height)
+            .mapToObj(y -> get(x, y));
+    }
+}
