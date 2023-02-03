@@ -323,9 +323,56 @@ public class Game {
     // Public methods
     //
 
+    /**
+     * Resets the game to its initial state.
+     */
+    public void reset() {
+        initializeState();
+    }
+
+    /**
+     * Checks whether {@code move} is valid for next move.
+     *
+     * @param move Coordinates to check
+     * @return {@code true} if coordinates are valid for next move, {@code false} otherwise
+     */
+    public boolean validate(Coordinates move) {
+        return validMoves.stream()
+            .anyMatch(c -> c.equals(move));
+    }
+
+    /**
+     * Performs next move for current player and updates game state.
+     *
+     * @param move Next move for current color
+     *
+     * @throws IllegalStateException If game is over
+     * @throws IllegalArgumentException If passed an invalid move
+     */
+    public void next(Coordinates move) throws IllegalStateException, IllegalArgumentException {
+        if ( over ) throw new IllegalStateException();
+        if ( !validate(move) ) throw new IllegalArgumentException();
+
+        setAndUpdateState(move);
+    }
+
     //
     // Public accessors
     //
+
+    /**
+     * @return Game board width
+     */
+    public int width() {
+        return board.width();
+    }
+
+    /**
+     * @return Game board height
+     */
+    public int height() {
+        return board.height();
+    }
 
     /**
      * @return White of this game
@@ -377,59 +424,8 @@ public class Game {
     }
 
     //
-    // Public state change methods
-    //
-
-    /**
-     * Resets the game to its initial state.
-     */
-    public void reset() {
-        initializeState();
-    }
-
-    /**
-     * Performs next move for current player and updates game state.
-     *
-     * @param move Next move for current color
-     *
-     * @throws IllegalStateException If game is over
-     * @throws IllegalMoveException If passed an invalid move
-     */
-    public void next(Coordinates move) throws IllegalStateException, IllegalMoveException {
-        if ( over ) throw new IllegalStateException();
-        if ( !validate(move) ) throw new IllegalMoveException(move);
-
-        setAndUpdateState(move);
-    }
-
-    /**
-     * Checks whether {@code move} is valid for next move.
-     *
-     * @param move Coordinates to check
-     * @return {@code true} if coordinates are valid for next move, {@code false} otherwise
-     */
-    public boolean validate(Coordinates move) {
-        return validMoves.stream()
-            .anyMatch(c -> c.equals(move));
-    }
-
-    //
     // Display helper methods
     //
-
-    /**
-     * @return Game board width
-     */
-    public int width() {
-        return board.width();
-    }
-
-    /**
-     * @return Game board height
-     */
-    public int height() {
-        return board.height();
-    }
 
     /**
      * @return Ordered stream of board tiles in row-major order
