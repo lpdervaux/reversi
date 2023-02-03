@@ -20,7 +20,8 @@ public class Game {
     private final OrdinalBoard<Tile> board; // game board
     private final Player white; // white of this game
     private final Player black; // black of this game
-    private final Set<Coordinates> validMoves; // list of valid moves for current turn
+    private final Set<Coordinates> validMoves; // set of valid moves for current turn
+    private final Set<Coordinates> edges; // set of edges
 
     private int turn; // number of turns elapsed
     private Player current; // color for the current turn
@@ -51,8 +52,9 @@ public class Game {
             width, height
         );
 
-        // create validMoves List
+        // create validMoves and edges
         this.validMoves = new HashSet<>(board.width() * board.height() / 2);
+        this.edges = new HashSet<>(board.width() * board.height() / 2);
 
         // create players
         this.white = new Player(Color.WHITE, 0);
@@ -83,7 +85,7 @@ public class Game {
      */
     private void initializeState() {
         initializeTurnState();
-        initializeBoardAndScore();
+        initializeBoard();
         updateValidMoves();
     }
 
@@ -102,26 +104,35 @@ public class Game {
     }
 
     /**
-     * Sets board to its initial state and updates white and black's scores accordingly.
+     * Sets board to its initial state and updates edges and scores accordingly.
      * <p>
      * Composed method of {@code initializeState}
      *
      * @see #initializeState()
      */
-    private void initializeBoardAndScore() {
+    private void initializeBoard() {
         board.traverse().forEach(c -> board.set(c, Tile.FREE));
 
         // initial center color tiles such as
         // w b
         // b w
-        var topLeft = new Coordinates(board.width() / 2 - 1, board.height() / 2 - 1);
-        board.set(topLeft, Tile.WHITE);
-        board.set(Direction.SOUTHEAST.next().apply(topLeft), Tile.WHITE);
-        board.set(Direction.EAST.next().apply(topLeft), Tile.BLACK);
-        board.set(Direction.SOUTH.next().apply(topLeft), Tile.BLACK);
+        var northWest = new Coordinates(board.width() / 2 - 1, board.height() / 2 - 1);
+        var northEast = Direction.EAST.next().apply(northWest);
+        var southWest = Direction.SOUTH.next().apply(northWest);
+        var southEast = Direction.SOUTHEAST.next().apply(northWest);
+        board.set(northWest, Tile.WHITE);
+        board.set(southEast, Tile.WHITE);
+        board.set(northEast, Tile.BLACK);
+        board.set(southWest, Tile.BLACK);
 
         white.score = 2;
         black.score = 2;
+
+        edges.clear();
+        updateEdges(northWest);
+        updateEdges(northEast);
+        updateEdges(southWest);
+        updateEdges(southEast);
     }
 
     //
@@ -129,7 +140,20 @@ public class Game {
     //
 
     /**
-     * Updates validMoves list in place, according to current game state.
+     * Updates edges after setting a tile.
+     *
+     * @param set Coordinates of a tile that was set
+     */
+    private void updateEdges(Coordinates set) {
+        edges.remove(set);
+        Arrays.stream(Direction.values())
+            .map(d -> d.next().apply(set))
+            .filter(c -> board.validate(c) && board.get(c) == Tile.FREE)
+            .forEach(edges::add);
+    }
+
+    /**
+     * Updates validMoves set in place, according to current game state.
      */
     private void updateValidMoves() {
         validMoves.clear();
@@ -142,8 +166,9 @@ public class Game {
      *
      * @param move Coordinates of move to set
      */
-    private void setAndUpdateState(Coordinates move) {
+    private void setAndUpdate(Coordinates move) {
         var enclosed = set(current.color(), move);
+        updateEdges(move);
         updateState(enclosed);
     }
 
@@ -215,7 +240,7 @@ public class Game {
      */
     // TODO: speed this up with edge set
     private Stream<Coordinates> validMoveAll(Color color) {
-        return board.traverse()
+        return edges.stream()
             .filter(c -> validMove(color, c));
     }
 
@@ -230,7 +255,7 @@ public class Game {
      */
     // TODO: speed this up with edge Set
     private boolean validMoveAny(Color color) {
-        return board.traverse()
+        return edges.stream()
             .anyMatch(c -> validMove(color, c));
     }
 
@@ -300,6 +325,8 @@ public class Game {
      * @param direction Direction to check
      * @return Stream of coordinates of enclosed opposing tiles, which may be empty.
      */
+    // TODO: version of enclose that finds first match and returns true or false
+    // TODO: maybe make a non stream based version also, as a point of comparison
     private Stream<Coordinates> enclose(Color color, Coordinates origin, Direction direction) {
         return Stream.iterate(
                 direction.next().apply(origin),
@@ -336,8 +363,7 @@ public class Game {
      * @return {@code true} if coordinates are valid for next move, {@code false} otherwise
      */
     public boolean validate(Coordinates move) {
-        return validMoves.stream()
-            .anyMatch(c -> c.equals(move));
+        return validMoves.contains(move);
     }
 
     /**
@@ -352,7 +378,7 @@ public class Game {
         if ( over ) throw new IllegalStateException();
         if ( !validate(move) ) throw new IllegalArgumentException();
 
-        setAndUpdateState(move);
+        setAndUpdate(move);
     }
 
     //
