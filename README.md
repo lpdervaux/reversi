@@ -4,7 +4,7 @@ Implementation of Reversi with an accompanying simple text interface; demonstrat
 ## packages overview
 * `org.example.board`
   
-  Defines a generic game board
+  Generic game board
   
   * `org.example.board.ordinal`
   
@@ -16,7 +16,7 @@ Implementation of Reversi with an accompanying simple text interface; demonstrat
   
   * `org.example.reversi.ai`
   
-    Game AI for testing
+    Game AI
 
 * `org.example.ui`
   
