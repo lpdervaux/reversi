@@ -11,7 +11,7 @@ import java.util.stream.Stream;
  * Mutable state class that implements the rules of Reversi.
  */
 // TODO: class is fairly large; it could be split into a hierarchy of abstract classes - said abstract classes would make no sense in isolation however
-// TODO: maintain and use a Set of edge tiles
+// TODO: maintaining a set of all valid moves each turn is a bottleneck for larger grids, stop tracking them; keep track of the single move found by validMoveAny instead
 public class Game {
     //
     // Instance variables
