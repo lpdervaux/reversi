@@ -2,6 +2,7 @@ package org.example.reversi;
 
 import org.example.board.ordinal.Coordinates;
 import org.example.board.ordinal.Direction;
+import org.example.board.ordinal.OrdinalBoard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,8 +19,7 @@ public class Game {
     // Instance variables
     //
 
-    // TODO: replace Board with OrdinalBoard<Tile>
-    private final Board board; // backing board
+    private final OrdinalBoard<Tile> board; // game board
     private final Player white; // white of this game
     private final Player black; // black of this game
     private final List<Coordinates> validMoves; // list of valid moves for current turn
@@ -34,30 +34,34 @@ public class Game {
     //
 
     /**
-     * Instantiates a new {@code Game} using a dedicated {@code board}.
-     * Caller is responsible for ensuring that {@code board} will not be externally accessed until this instance is reclaimed.
-     *
-     * @param board Board for use with a new {@code Game} instance
-     */
-    // TODO: remove this constructor and move logic into Game(int, int)
-    private Game(Board board) {
-        this.board = board;
-        this.white = new Player(Color.WHITE, 0);
-        this.black = new Player(Color.BLACK, 0);
-        this.validMoves = new ArrayList<>(board.width() * board.height() / 2);
-        initializeColorsVersus();
-
-        initializeState();
-    }
-
-    /**
-     * Instantiates a new {@code Game} with a {@code Board} of {@code width} and {@code height}.
+     * Instantiates a new {@code Game} with a board of {@code width} and {@code height}.
      *
      * @param width Multiple of 2, greater or equal to 4
      * @param height Multiple of 2, greater or equal to 4
+     *
+     * @throws IllegalArgumentException If any of width and height are invalid
      */
     public Game(int width, int height) {
-        this(Board.create(width, height));
+        if (
+            width % 2 != 0 || height % 2 != 0
+                || width < 4 || height < 4
+        ) throw new IllegalArgumentException();
+
+        // create board from a fixed size List
+        this.board = new OrdinalBoard<>(
+            Arrays.asList(new Tile[width * height]),
+            width, height
+        );
+
+        // create validMoves List
+        this.validMoves = new ArrayList<>(board.width() * board.height() / 2);
+
+        // create players
+        this.white = new Player(Color.WHITE, 0);
+        this.black = new Player(Color.BLACK, 0);
+        initializePlayersCrossReference();
+
+        initializeState();
     }
 
     //
@@ -67,11 +71,11 @@ public class Game {
     /**
      * Initializes black and white's cross-references.
      * <p>
-     * Composed method of {@code Game(Board board)}
+     * Composed method of {@code Game(int, int)}
      *
-     * @see #Game(Board board)
+     * @see #Game(int, int)
      */
-    private void initializeColorsVersus() {
+    private void initializePlayersCrossReference() {
         white.versus = black;
         black.versus = white;
     }
