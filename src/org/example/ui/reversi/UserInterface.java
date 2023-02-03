@@ -158,7 +158,7 @@ public class UserInterface extends org.example.ui.UserInterface {
             System.out.println("Draw");
         else
             System.out.printf(
-                "Winner: %s",
+                "Winner: %s%n",
                 ( game.white().score() > game.black().score() ) ? Color.WHITE : Color.BLACK
             );
     }
