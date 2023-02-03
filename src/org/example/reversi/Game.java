@@ -134,12 +134,9 @@ public class Game {
      * Updates validMoves list in place, according to current game state.
      */
     private void updateValidMoves() {
+        validMoves.clear();
         validMoveAll(current.color())
-            .collect(
-                () -> { validMoves.clear(); return validMoves; },
-                List::add,
-                List::addAll
-            );
+            .forEach(validMoves::add);
     }
 
     /**
