@@ -4,9 +4,7 @@ import org.example.board.ordinal.Coordinates;
 import org.example.board.ordinal.Direction;
 import org.example.board.ordinal.OrdinalBoard;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -22,7 +20,7 @@ public class Game {
     private final OrdinalBoard<Tile> board; // game board
     private final Player white; // white of this game
     private final Player black; // black of this game
-    private final List<Coordinates> validMoves; // list of valid moves for current turn
+    private final Set<Coordinates> validMoves; // list of valid moves for current turn
 
     private int turn; // number of turns elapsed
     private Player current; // color for the current turn
@@ -54,7 +52,7 @@ public class Game {
         );
 
         // create validMoves List
-        this.validMoves = new ArrayList<>(board.width() * board.height() / 2);
+        this.validMoves = new HashSet<>(board.width() * board.height() / 2);
 
         // create players
         this.white = new Player(Color.WHITE, 0);
