@@ -5,19 +5,19 @@ import java.util.Scanner;
 
 /**
  * A user interface that scans standard input.
- *
- * Provides a correctly initialized {@code Scanner} on {@code System.in} and implements {@code AutoCloseable} to close it.
+ * <p>
+ * Correctly initializes and disposes of a {@code Scanner} bound to {@code System.in}.
  */
 public abstract class ScannerUserInterface implements AutoCloseable {
-    /*
-     * Scanner is not reclaimable by garbage collection until closed.
-     * However, closing Scanner while bound to System.in will also close System.in.
-     * Hence, the need for FilterInputStream at instantiation and explicit call to close()
-     */
     protected final Scanner stdin;
 
     /**
      * Instantiates instance variable {@code stdin} with a new {@code Scanner}.
+     */
+    /*
+     * A Scanner is not reclaimable by garbage collection until closed
+     * However, closing a Scanner bound to System.in will also close System.in
+     * Hence the need for FilterInputStream at instantiation
      */
     protected ScannerUserInterface() {
         this.stdin = new Scanner(

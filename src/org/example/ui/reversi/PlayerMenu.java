@@ -2,6 +2,11 @@ package org.example.ui.reversi;
 
 import org.example.ui.Menu;
 
+/**
+ * Menu for player setting presenting the choices of Human and AI.
+ *
+ * @see Menu
+ */
 public enum PlayerMenu implements Menu {
     HUMAN("h", "Human"),
     AI("a", "AI");

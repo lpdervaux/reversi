@@ -2,6 +2,11 @@ package org.example.ui.reversi;
 
 import org.example.ui.Menu;
 
+/**
+ * Menu for tile map setting presenting the choices of ASCII and dot.
+ *
+ * @see Menu
+ */
 public enum TileMapMenu implements Menu {
     ASCII("a", "ASCII: w b ."),
     DOT("d", "Dot: o ● ·");

@@ -3,7 +3,8 @@ package org.example.board.ordinal;
 import java.util.function.UnaryOperator;
 
 /**
- * Represents directions relative to {@code OrdinalBoard}. Cardinals are such that {@code Coordinates} 0, 0 is the northeasternmost point.
+ * Represents directions relative to {@code OrdinalBoard}.
+ * Cardinals are such that {@code Coordinates} 0, 0 is the northeasternmost point.
  */
 public enum Direction {
     NORTH(
@@ -32,12 +33,13 @@ public enum Direction {
     );
 
     private final UnaryOperator<Coordinates> next; // function to produce the next set of coordinates in direction
-    private Direction versus; // may not be final since self references can only be initialized in a static block
+    private Direction versus; // opposite direction, may not be final since self-referencing
 
     Direction(UnaryOperator<Coordinates> next) {
         this.next = next;
     }
 
+    // initialize opposing direction
     static {
         NORTH.versus = SOUTH;
         SOUTH.versus = NORTH;
@@ -57,7 +59,7 @@ public enum Direction {
     }
 
     /**
-     * @return The opposite direction
+     * @return Opposite direction
      */
     public Direction versus() {
         return versus;

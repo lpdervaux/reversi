@@ -5,9 +5,9 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * Represents a list as a two-dimensional board of set width and height.
+ * Wraps a list to represent a two-dimensional board of set width and height.
  *
- * @param <T> Element type
+ * @param <T> Element
  */
 public class Board<T> {
     private final List<T> board;
@@ -15,7 +15,7 @@ public class Board<T> {
     private final int height;
 
     /**
-     * Defines a board of {@code width} and {@code height} wrapping {@code list}.
+     * Wraps {@code list} to defines a board of {@code width} and {@code height}.
      *
      * @param list List of exactly {@code width * height} size to wrap
      * @param width Board width, non-zero positive
@@ -35,7 +35,7 @@ public class Board<T> {
     }
 
     /**
-     * Defines a board of equal sides of {@code side} wrapping {@code list}.
+     * Wraps {@code list} to define a board of equal sides of {@code side}.
      *
      * @param list List of exactly {@code side * side} size to wrap
      * @param side Board side, non-zero positive
@@ -86,7 +86,7 @@ public class Board<T> {
     }
 
     /**
-     * Retrieve element at (x y).
+     * Retrieves element at (x y).
      *
      * @param x Horizontal axis coordinate
      * @param y Vertical axis coordinate
@@ -100,7 +100,7 @@ public class Board<T> {
     }
 
     /**
-     * Set element at (x y)
+     * Sets element at (x y)
      *
      * @param x Horizontal axis coordinate
      * @param y Vertical axis coordinate
@@ -114,7 +114,7 @@ public class Board<T> {
     }
 
     /**
-     * @return Stream of board elements
+     * @return Ordered stream of all elements in row-major order
      */
     public Stream<T> stream() {
         return board.stream();
@@ -122,7 +122,7 @@ public class Board<T> {
 
     /**
      * @param y Row index
-     * @return Elements of row {@code y} in column order
+     * @return Ordered stream of row {@code y} in column order
      *
      * @throws IndexOutOfBoundsException If index is not within the board
      */
@@ -134,7 +134,7 @@ public class Board<T> {
 
     /**
      * @param x Column index
-     * @return Elements of column {@code x} in row order
+     * @return Ordered stream of column {@code x} in row order
      *
      * @throws IndexOutOfBoundsException If index is not within the board
      */

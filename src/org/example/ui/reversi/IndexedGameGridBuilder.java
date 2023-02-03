@@ -8,9 +8,8 @@ import java.util.stream.IntStream;
 
 /**
  * Builds a state {@code String} from a {@code Game}. Immutable.
- *
- * Favors {@code String.format} for readability.
  */
+// TODO: class to be removed
 class IndexedGameGridBuilder {
     private final StringBuilder builder;
 
@@ -19,10 +18,9 @@ class IndexedGameGridBuilder {
 
     /**
      * Builds an indexed grid of {@code game} using {@code tileMap}.
-     * // TODO: move turn state elsewhere
      *
      * @param tileMap Tile map to use
-     * @param game
+     * @param game Game to build for
      */
     public IndexedGameGridBuilder(Map<Tile, String> tileMap, org.example.reversi.Game game) {
         this.builder = new StringBuilder();
@@ -32,20 +30,32 @@ class IndexedGameGridBuilder {
         build();
     }
 
+    /**
+     * @return Indexed grid string
+     */
     @Override
     public String toString() {
         return builder.toString();
     }
 
+    /**
+     * Builds indexed grid.
+     */
     private void build() {
         appendBoard();
     }
 
+    /**
+     * Appends board representation to {@code builder}.
+     */
     private void appendBoard() {
         appendBoardHeader();
         appendBoardRows();
     }
 
+    /**
+     * Appends board header to {@code builder}.
+     */
     private void appendBoardHeader() {
         builder.append(
             String.format(
@@ -57,6 +67,9 @@ class IndexedGameGridBuilder {
         );
     }
 
+    /**
+     * @return Header index of {@code game.width()}
+     */
     private String headerIndex() {
         return IntStream.range(0, game.width())
             .map(x -> x % 10)
@@ -64,6 +77,9 @@ class IndexedGameGridBuilder {
             .collect(Collectors.joining());
     }
 
+    /**
+     * Appends board row grid to {@code builder}.
+     */
     private void appendBoardRows() {
         IntStream.range(0, game.height())
             .forEachOrdered(
@@ -81,6 +97,10 @@ class IndexedGameGridBuilder {
         );
     }
 
+    /**
+     * @param y Row index
+     * @return Row as a space separated string of symbols mapped by {@code tileMap}
+     */
     private String boardRow(int y) {
         return game.row(y)
             .map(tileMap::get)

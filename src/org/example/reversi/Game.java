@@ -8,19 +8,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-// TODO: speed up by maintaining list of edge tiles
-
-// TODO: maybe split enclosing logic into abstract base class
-// TODO: then split validating logic into abstract base class of the above
-// TODO: then inherit those with this class and implement game state here
 /**
  * Mutable state class that implements the rules of Reversi.
  */
+// TODO: class is fairly large; it could be split into a hierarchy of abstract classes - said abstract classes would make no sense in isolation however
+// TODO: maintain and use a Set of edge tiles
 public class Game {
     //
     // Instance variables
     //
 
+    // TODO: replace Board with OrdinalBoard<Tile>
     private final Board board; // backing board
     private final Player white; // white of this game
     private final Player black; // black of this game
@@ -41,6 +39,7 @@ public class Game {
      *
      * @param board Board for use with a new {@code Game} instance
      */
+    // TODO: remove this constructor and move logic into Game(int, int)
     private Game(Board board) {
         this.board = board;
         this.white = new Player(Color.WHITE, 0);
@@ -67,6 +66,7 @@ public class Game {
 
     /**
      * Initializes black and white's cross-references.
+     * <p>
      * Composed method of {@code Game(Board board)}
      *
      * @see #Game(Board board)
@@ -87,6 +87,7 @@ public class Game {
 
     /**
      * Sets instance variables to their initial state.
+     * <p>
      * Composed method of {@code initializeState}
      *
      * @see #initializeState()
@@ -100,6 +101,7 @@ public class Game {
 
     /**
      * Sets board to its initial state and updates white and black's scores accordingly.
+     * <p>
      * Composed method of {@code initializeState}
      *
      * @see #initializeState()
@@ -139,7 +141,7 @@ public class Game {
     /**
      * Sets tile at {@code move} and enclosing groups for current color, then update game state.
      *
-     * @param move
+     * @param move Coordinates of move to set
      */
     private void setAndUpdateState(Coordinates move) {
         var enclosed = set(current.color(), move);
@@ -148,6 +150,7 @@ public class Game {
 
     /**
      * Sets tile at {@code origin} and all enclosing groups to {@code color}'s tile.
+     * <p>
      * Composed method of {@code setAndUpdateState}
      *
      * @param color Color to set tile for
@@ -171,10 +174,11 @@ public class Game {
     }
 
     /**
-     * Updates game state.
+     * Updates game state following a move.
+     * <p>
      * Composed method of {@code setAndUpdateState}
      *
-     * @param enclosed Number of tiles captured by current player
+     * @param enclosed Number of opposing tiles captured by current player
      */
     private void updateState(int enclosed) {
         current.score += enclosed + 1;
@@ -210,6 +214,7 @@ public class Game {
      *
      * @see #validMove(Color, Coordinates)
      */
+    // TODO: speed this up with edge set
     private Stream<Coordinates> validMoveAll(Color color) {
         return board.traverse()
             .filter(c -> validMove(color, c));
@@ -224,6 +229,7 @@ public class Game {
      *
      * @see #validMove(Color, Coordinates)
      */
+    // TODO: speed this up with edge Set
     private boolean validMoveAny(Color color) {
         return board.traverse()
             .anyMatch(c -> validMove(color, c));
@@ -295,6 +301,7 @@ public class Game {
      * @param direction Direction to check
      * @return Stream of coordinates of enclosed opposing tiles, which may be empty.
      */
+    // TODO: change this logic to use multiple takeWhile
     private Stream<Coordinates> enclose(Color color, Coordinates origin, Direction direction) {
         return board.direction(origin, direction)
             .skip(1) // skip origin tile
@@ -335,14 +342,14 @@ public class Game {
     }
 
     /**
-     * @return Current turn count
+     * @return Turn count
      */
     public int turn() {
         return turn;
     }
 
     /**
-     * @return Color of the current turn
+     * @return Player for current turn
      */
     public Player currentPlayer() {
         return current;
@@ -356,7 +363,7 @@ public class Game {
     }
 
     /**
-     * @return {@code true} if last color's turn was skipped, {@code false} otherwise
+     * @return {@code true} if a player had no valid move after previous turn, {@code false} otherwise
      */
     public boolean skipped() {
         return skipped;
@@ -391,12 +398,13 @@ public class Game {
      *
      * @see #next(Coordinates)
      */
+    // TODO: method from early development, to be removed
     public void next(int x, int y) {
         next(new Coordinates(x, y));
     }
 
     /**
-     * Performs next move for current color and updates game state.
+     * Performs next move for current player and updates game state.
      *
      * @param move Next move for current color
      *
@@ -426,21 +434,21 @@ public class Game {
     //
 
     /**
-     * @return Board width
+     * @return Game board width
      */
     public int width() {
         return board.width();
     }
 
     /**
-     * @return Board height
+     * @return Game board height
      */
     public int height() {
         return board.height();
     }
 
     /**
-     * @return Stream of board tiles
+     * @return Ordered stream of board tiles in row-major order
      */
     public Stream<Tile> stream() {
         return board.stream();
@@ -448,7 +456,7 @@ public class Game {
 
     /**
      * @param y Row index
-     * @return Tiles of row {@code y} in column order
+     * @return Ordered stream of row {@code y} in column order
      *
      * @throws IndexOutOfBoundsException If index is not within the board
      */
@@ -458,7 +466,7 @@ public class Game {
 
     /**
      * @param x Column index
-     * @return Tiles of column {@code x} in row order
+     * @return Ordered stream of column {@code x} in row order
      *
      * @throws IndexOutOfBoundsException If index is not within the board
      */

@@ -1,7 +1,7 @@
 package org.example.board.ordinal;
 
 /**
- * Immutable coordinates pair for use with {@code OrdinalBoard}.
+ * Immutable coordinates for use with {@code OrdinalBoard}.
  *
  * @param x Horizontal axis coordinate
  * @param y Vertical axis coordinate

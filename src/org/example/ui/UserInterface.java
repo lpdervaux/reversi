@@ -21,6 +21,7 @@ public abstract class UserInterface extends ScannerUserInterface {
      *
      * @param <T> An {@code Enum} implementing {@code Menu}
      */
+    // TODO: change to not require enum; just a Map<String, String> that can be static initialized - this would also prevent duplicate key entries
     protected <T extends Enum<T> & Menu> T promptUntilMenuChoice(String prompt, Class<T> menu) {
         var set = EnumSet.allOf(menu);
 

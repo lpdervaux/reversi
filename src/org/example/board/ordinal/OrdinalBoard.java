@@ -6,18 +6,34 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * Represents a list as a two-dimensional board of set width and height.
- * Individual elements may be accessed using immutable Coordinates.
+ * Wraps a list to represent a two-dimensional board of set width and height with associated directions and coordinates.
  *
- * @param <T> Element type
+ * @param <T> Element
  */
 public class OrdinalBoard<T> extends Board<T> {
-    public OrdinalBoard(List<T> board, int width, int height) {
-        super(board, width, height);
+    /**
+     * Wraps {@code list} to defines a board of {@code width} and {@code height}.
+     *
+     * @param list List of exactly {@code width * height} size to wrap
+     * @param width Board width, non-zero positive
+     * @param height Board height, non-zero positive
+     *
+     * @throws IllegalArgumentException If {@code list.size()} is not equal to {@code width * height}
+     */
+    public OrdinalBoard(List<T> list, int width, int height) {
+        super(list, width, height);
     }
 
-    public OrdinalBoard(List<T> board, int side) {
-        super(board, side);
+    /**
+     * Wraps {@code list} to define a board of equal sides of {@code side}.
+     *
+     * @param list List of exactly {@code side * side} size to wrap
+     * @param side Board side, non-zero positive
+     *
+     * @throws IllegalArgumentException If {@code list.size()} is not equal to {@code side * side}
+     */
+    public OrdinalBoard(List<T> list, int side) {
+        super(list, side);
     }
 
     /**

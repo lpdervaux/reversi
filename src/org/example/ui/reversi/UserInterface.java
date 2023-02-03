@@ -45,7 +45,7 @@ public class UserInterface extends org.example.ui.UserInterface {
     //
 
     //
-    // variables
+    // Instance variables
     //
 
     private int width; // board width option
@@ -56,7 +56,7 @@ public class UserInterface extends org.example.ui.UserInterface {
     private Game game;
 
     //
-    // methods
+    // Instance methods
     //
 
     /**
@@ -83,6 +83,10 @@ public class UserInterface extends org.example.ui.UserInterface {
         game = new Game(width, height);
         gameInputLoop();
     }
+
+    //
+    // Display related methods
+    //
 
     /**
      * Displays startup message.
@@ -154,6 +158,10 @@ public class UserInterface extends org.example.ui.UserInterface {
         );
     }
 
+    //
+    // String building methods for use with display methods
+    //
+
     /**
      * Builds a {@code String} representing the game board as a single-digit indexed grid.
      * <p>
@@ -207,6 +215,10 @@ public class UserInterface extends org.example.ui.UserInterface {
             )
             .collect(Collectors.joining());
     }
+
+    //
+    // Prompt related methods
+    //
 
     /**
      * Prompts for start menu and processes selections until start is selected.
@@ -341,41 +353,9 @@ public class UserInterface extends org.example.ui.UserInterface {
         return new Coordinates(x, y);
     }
 
-    /**
-     * Displays game state, queries and executes a move until {@code game} ends, then displays final state.
-     */
-    private void gameInputLoop() {
-        do {
-            System.out.println(); // blank line separator
-            displayCurrentState();
-
-            Coordinates nextMove = queryNextMove();
-            displayNextMove(nextMove);
-
-            game.next(nextMove);
-        } while ( !game.over() );
-
-        System.out.println(); // blank line separator
-        displayFinalState();
-    }
-
-    /**
-     * Queries either human or AI for the next move depending on the {@code aiActive} status for current player's {@code Color}.
-     *
-     * @return Coordinates of next move
-     */
-    private Coordinates queryNextMove() {
-        Coordinates nextMove;
-
-        if ( aiActive.get(game.currentPlayer().color()) ) {
-            nextMove = RandomAI.nextMove(game); // demo only supports RandomAI
-        }
-        else {
-            nextMove = promptForNextMoveUntilValid();
-        }
-
-        return nextMove;
-    }
+    //
+    // Parser methods for use with prompt methods
+    //
 
     /**
      * Parses a coordinate from input.
@@ -449,5 +429,45 @@ public class UserInterface extends org.example.ui.UserInterface {
         }
 
         return i;
+    }
+
+    //
+    // Input loop and query methods
+    //
+
+    /**
+     * Displays game state, queries and executes a move until {@code game} ends, then displays final state.
+     */
+    private void gameInputLoop() {
+        do {
+            System.out.println(); // blank line separator
+            displayCurrentState();
+
+            Coordinates nextMove = queryNextMove();
+            displayNextMove(nextMove);
+
+            game.next(nextMove);
+        } while ( !game.over() );
+
+        System.out.println(); // blank line separator
+        displayFinalState();
+    }
+
+    /**
+     * Queries either human or AI for the next move depending on the {@code aiActive} status for current player's {@code Color}.
+     *
+     * @return Coordinates of next move
+     */
+    private Coordinates queryNextMove() {
+        Coordinates nextMove;
+
+        if ( aiActive.get(game.currentPlayer().color()) ) {
+            nextMove = RandomAI.nextMove(game); // demo only supports RandomAI
+        }
+        else {
+            nextMove = promptForNextMoveUntilValid();
+        }
+
+        return nextMove;
     }
 }
