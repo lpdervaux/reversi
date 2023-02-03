@@ -238,7 +238,6 @@ public class Game {
      *
      * @see #validMove(Color, Coordinates)
      */
-    // TODO: speed this up with edge set
     private Stream<Coordinates> validMoveAll(Color color) {
         return edges.stream()
             .filter(c -> validMove(color, c));
@@ -253,7 +252,6 @@ public class Game {
      *
      * @see #validMove(Color, Coordinates)
      */
-    // TODO: speed this up with edge Set
     private boolean validMoveAny(Color color) {
         return edges.stream()
             .anyMatch(c -> validMove(color, c));
