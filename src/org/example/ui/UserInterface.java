@@ -1,9 +1,8 @@
 package org.example.ui;
 
 import java.io.IOError;
-import java.util.EnumSet;
+import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 /**
  * Extends {@code ScannerUserInterface} with generic user interface methods.
@@ -12,49 +11,46 @@ public abstract class UserInterface extends ScannerUserInterface {
     protected UserInterface() {}
 
     /**
-     * Prompts for a menu choice until match using static {@code Enum} based menu.
-     * Presents {@code prompt} followed by menu until a matching {@code Menu.choice()} is input.
+     * Prompts for a menu choice until match.
      *
      * @param prompt Prompt to present
      * @param menu Enumeration class
      * @return Matching enumeration member
-     *
-     * @param <T> An {@code Enum} implementing {@code Menu}
      */
-    // TODO: change to not require enum; just a Map<String, String> that can be static initialized - this would also prevent duplicate key entries
-    protected <T extends Enum<T> & Menu> T promptUntilMenuChoice(String prompt, Class<T> menu) {
-        var set = EnumSet.allOf(menu);
+    protected String promptUntilMenuChoice(String prompt, Map<String, String> menu) {
+        var menuPrompt = new StringBuilder();
 
-        var promptAndMenu = prompt +
-            set.stream().map(
-                m -> String.format("[%s] %s%n", m.choice(), m.description())
+        menuPrompt.append(prompt);
+        menu.entrySet().stream()
+            .map(
+                e -> String.format("[%s] %s%n", e.getKey(), e.getValue())
             )
-            .collect(Collectors.joining());
+            .forEachOrdered(menuPrompt::append);
 
-        return promptUntil(promptAndMenu, s -> menuParser(s, set));
+        return promptUntil(menuPrompt.toString(), s -> menuParser(s, menu));
     }
 
     /**
-     * Returns enumeration member corresponding to {@code input}.
+     * Parses input for menu key.
+     * Throws a descriptive {@code IllegalArgumentException} for use with {@code promptUntil} if parsing fails.
+     * <p>
      * Composed method of {@code promptUntilMenuChoice}.
      *
-     * @param input String to match against enumeration
-     * @param set Set of enumeration
-     * @return Matching enumeration member
+     * @param input Input to parse
+     * @param menu Menu map
+     * @return Menu key equal to input
      *
-     * @param <T> An {@code Enum} implementing {@code Menu}
+     * @throws IllegalArgumentException If input is not within key set
      *
-     * @throws IllegalArgumentException If no matching {@code Menu.choice()} exists
+     * @see #promptUntilMenuChoice(String, Map)
      */
-    static private <T extends Enum<T> & Menu> T menuParser(String input, EnumSet<T> set) {
-        return set.stream()
-            .filter(m -> m.choice().equals(input))
-            .findAny()
-            .orElseThrow(
-                () -> new IllegalArgumentException(
-                    String.format("Unknown selection: %s", input)
-                )
+    private String menuParser(String input, Map<String, String> menu) throws IllegalArgumentException {
+        if ( !menu.containsKey(input) )
+            throw new IllegalArgumentException(
+                String.format("Unknown selection: %s", input)
             );
+
+        return input;
     }
 
     /**

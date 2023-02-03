@@ -7,6 +7,7 @@ import org.example.reversi.Tile;
 import org.example.reversi.ai.RandomAI;
 
 import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -27,18 +28,41 @@ public class UserInterface extends org.example.ui.UserInterface {
     static private final int DEFAULT_HEIGHT = 8;
 
     // tile maps
-    static private final Map<Tile, String> DOT_TILE_MAP =
-        Map.ofEntries(
+    static private final Map<Tile, String> DOT_TILE_MAP = Map
+        .ofEntries(
             Map.entry(Tile.WHITE, "o"),
             Map.entry(Tile.BLACK, "●"),
             Map.entry(Tile.FREE, "·")
         );
-    static private final Map<Tile, String> ASCII_TILE_MAP =
-        Map.ofEntries(
+
+    static private final Map<Tile, String> ASCII_TILE_MAP = Map
+        .ofEntries(
             Map.entry(Tile.WHITE, "w"),
             Map.entry(Tile.BLACK, "b"),
             Map.entry(Tile.FREE, ".")
         );
+
+    // menus
+    static private final Map<String, String> START_MENU;
+    static private final Map<String, String> PLAYER_MENU;
+    static private final Map<String, String> TILE_MAP_MENU;
+
+    static {
+        // LinkedHashMap to preserve ordering
+        START_MENU = new LinkedHashMap<>(4, 1.0f);
+        START_MENU.put("b", "Board size");
+        START_MENU.put("p", "Players");
+        START_MENU.put("t", "Tile map");
+        START_MENU.put("s", "Start");
+
+        PLAYER_MENU = new LinkedHashMap<>(2, 1.0f);
+        PLAYER_MENU.put("h", "Human");
+        PLAYER_MENU.put("a", "AI");
+
+        TILE_MAP_MENU = new LinkedHashMap<>(2, 1.0f);
+        TILE_MAP_MENU.put("a", "ASCII: w b .");
+        TILE_MAP_MENU.put("d", "Dot: o ● ·");
+    }
 
     //
     // non-static
@@ -224,16 +248,16 @@ public class UserInterface extends org.example.ui.UserInterface {
      * Prompts for start menu and processes selections until start is selected.
      */
     private void promptStartMenuUntilStart() {
-        StartMenu choice;
+        String choice;
 
         do {
             choice = promptStartMenu();
             switch (choice) {
-                case SIZE -> promptAndChangeBoardSize();
-                case PLAYER -> promptAndChangePlayerAI();
-                case TILE -> promptAndChangeTileMap();
+                case "b" -> promptAndChangeBoardSize();
+                case "p" -> promptAndChangePlayerAI();
+                case "t" -> promptAndChangeTileMap();
             }
-        } while ( choice != StartMenu.START );
+        } while ( !choice.equals("s") );
     }
 
     /**
@@ -243,7 +267,7 @@ public class UserInterface extends org.example.ui.UserInterface {
      *
      * @see #promptStartMenuUntilStart()
      */
-    private StartMenu promptStartMenu() {
+    private String promptStartMenu() {
         return promptUntilMenuChoice(
             String.format(
                 """
@@ -259,7 +283,7 @@ public class UserInterface extends org.example.ui.UserInterface {
                     .map(s -> String.format("%s ", s))
                     .collect(Collectors.joining())
             ),
-            StartMenu.class
+            START_MENU
         );
     }
 
@@ -295,11 +319,11 @@ public class UserInterface extends org.example.ui.UserInterface {
      * @see #promptStartMenuUntilStart()
      */
     private void promptAndChangeTileMap() {
-        var tile = promptUntilMenuChoice("Please select a tile map." + System.lineSeparator(), TileMapMenu.class);
+        var tile = promptUntilMenuChoice("Please select a tile map." + System.lineSeparator(), TILE_MAP_MENU);
 
         switch (tile) {
-            case ASCII -> tileMap = ASCII_TILE_MAP;
-            case DOT -> tileMap = DOT_TILE_MAP;
+            case "a" -> tileMap = ASCII_TILE_MAP;
+            case "d" -> tileMap = DOT_TILE_MAP;
         }
     }
 
@@ -314,8 +338,8 @@ public class UserInterface extends org.example.ui.UserInterface {
      * @see #promptAndChangePlayerAI()
      */
     private boolean promptPlayerAI(String prompt) {
-        var choice = promptUntilMenuChoice(prompt, PlayerMenu.class);
-        return ( choice == PlayerMenu.AI );
+        var choice = promptUntilMenuChoice(prompt, PLAYER_MENU);
+        return ( choice.equals("a") );
     }
 
     /**
