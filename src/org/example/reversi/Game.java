@@ -388,22 +388,6 @@ public class Game {
     }
 
     /**
-     * Convenience method, calls {@code next(Coordinates)} with provided coordinates.
-     *
-     * @param x Horizontal axis coordinate
-     * @param y Vertical axis coordinate
-     *
-     * @throws IllegalStateException If game is over
-     * @throws IllegalMoveException If passed an invalid move
-     *
-     * @see #next(Coordinates)
-     */
-    // TODO: method from early development, to be removed
-    public void next(int x, int y) {
-        next(new Coordinates(x, y));
-    }
-
-    /**
      * Performs next move for current player and updates game state.
      *
      * @param move Next move for current color
