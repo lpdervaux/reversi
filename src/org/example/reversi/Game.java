@@ -301,9 +301,21 @@ public class Game {
      * @return Stream of coordinates of enclosed opposing tiles, which may be empty.
      */
     private Stream<Coordinates> enclose(Color color, Coordinates origin, Direction direction) {
-        return board.direction(direction.next().apply(origin), direction)
-            .takeWhile(c -> board.get(c) != Tile.FREE) // reduce to coordinates of contiguous non-FREE tiles
-            .takeWhile(c -> board.get(c) == color.versus().tile() ); // reduce to coordinates of contiguous opposing tiles
+        return Stream.iterate(
+                direction.next().apply(origin),
+                c -> ( board.validate(c) && board.get(c) != Tile.FREE ),
+                direction.next()
+            ) // contiguous non-free tiles
+            .filter(c -> board.get(c) == color.tile())
+            .findFirst() // first matching tile
+            .map(
+                m -> Stream.iterate(
+                    direction.next().apply(origin),
+                    c -> !c.equals(m),
+                    direction.next()
+                )
+            ) // tiles between origin and match
+            .orElse(Stream.empty()); // or nothing
     }
 
     //
