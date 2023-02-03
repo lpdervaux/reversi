@@ -18,11 +18,15 @@ import java.util.stream.IntStream;
  * A {@code Game} is then created and played to the end.
  */
 public class UserInterface extends org.example.ui.UserInterface {
+    //
     // static
+    //
 
+    // default size
     static private final int DEFAULT_WIDTH = 8;
     static private final int DEFAULT_HEIGHT = 8;
 
+    // tile maps
     static private final Map<Tile, String> DOT_TILE_MAP =
         Map.ofEntries(
             Map.entry(Tile.WHITE, "o"),
@@ -36,14 +40,24 @@ public class UserInterface extends org.example.ui.UserInterface {
             Map.entry(Tile.FREE, ".")
         );
 
-    // instance
+    //
+    // non-static
+    //
 
-    private int width; // board width
-    private int height; // board height
+    //
+    // variables
+    //
+
+    private int width; // board width option
+    private int height; // board height option
     private Map<Tile, String> tileMap; // tile map to display game board with
     private final Map<Color, Boolean> aiActive; // maps each Color to a boolean for which true equates to AI controlled
 
     private Game game;
+
+    //
+    // methods
+    //
 
     /**
      * Instantiates {@code UserInterface} with default parameters.
@@ -52,7 +66,7 @@ public class UserInterface extends org.example.ui.UserInterface {
         this.width = DEFAULT_WIDTH;
         this.height = DEFAULT_HEIGHT;
 
-        this.aiActive = new EnumMap<Color, Boolean>(Color.class);
+        this.aiActive = new EnumMap<>(Color.class);
         this.aiActive.put(Color.WHITE, true);
         this.aiActive.put(Color.BLACK, true);
 
@@ -81,24 +95,6 @@ public class UserInterface extends org.example.ui.UserInterface {
     }
 
     /**
-     * Displays game state as indexed grid, turn count and score.
-     * Composed function of {@code displayCurrentState} and {@code displayFinalState}.
-     *
-     * @see #displayCurrentState()
-     * @see #displayFinalState()
-     */
-    private void displayState() {
-        System.out.printf(
-            """
-            %s
-            Turn %d (W %d B %d)
-            """,
-            buildIndexedGrid(),
-            game.turn(), game.white().score(), game.black().score()
-        );
-    }
-
-    /**
      * Displays game state followed by current player.
      * Called for every iteration of {@code gameInputLoop}.
      *
@@ -123,7 +119,7 @@ public class UserInterface extends org.example.ui.UserInterface {
 
     /**
      * Displays game state followed by winner.
-     * Called after game ends.
+     * Called by {@code gameInputLoop} after game ends.
      *
      * @see #gameInputLoop()
      */
@@ -140,7 +136,27 @@ public class UserInterface extends org.example.ui.UserInterface {
     }
 
     /**
+     * Displays game state as indexed grid, turn count and score.
+     * <p>
+     * Composed function of {@code displayCurrentState} and {@code displayFinalState}.
+     *
+     * @see #displayCurrentState()
+     * @see #displayFinalState()
+     */
+    private void displayState() {
+        System.out.printf(
+            """
+            %s
+            Turn %d (W %d B %d)
+            """,
+            buildIndexedGrid(),
+            game.turn(), game.white().score(), game.black().score()
+        );
+    }
+
+    /**
      * Builds a {@code String} representing the game board as a single-digit indexed grid.
+     * <p>
      * Composed function of {@code displayState}.
      *
      * @return Game board as string
@@ -153,6 +169,7 @@ public class UserInterface extends org.example.ui.UserInterface {
 
     /**
      * Builds a grid header spanning {@code game.width()}.
+     * <p>
      * Composed function of {@code buildIndexedGrid}.
      *
      * @return Newline-terminated grid header
@@ -168,7 +185,8 @@ public class UserInterface extends org.example.ui.UserInterface {
     }
 
     /**
-     * Builds an indexed grid of {@code game.height()} where tiles are represented by {@code tileMap}.
+     * Builds an indexed grid of {@code game.height()} lines where tiles are represented by {@code tileMap}.
+     * <p>
      * Composed function of {@code buildIndexedGrid}.
      *
      * @return Newline-terminated indexed rows
@@ -260,20 +278,6 @@ public class UserInterface extends org.example.ui.UserInterface {
     }
 
     /**
-     * Prompts for a single player setting.
-     * Composed function of {@code promptAndChangePlayerAI}.
-     *
-     * @param prompt Prompt to display
-     * @return {@code true} for AI controlled, {@code false} otherwise
-     *
-     * @see #promptAndChangePlayerAI()
-     */
-    private boolean promptPlayerAI(String prompt) {
-        var choice = promptUntilMenuChoice(prompt, PlayerMenu.class);
-        return ( choice == PlayerMenu.AI );
-    }
-
-    /**
      * Prompts for tile map and assigns accordingly.
      *
      * @see #promptStartMenuUntilStart()
@@ -288,8 +292,24 @@ public class UserInterface extends org.example.ui.UserInterface {
     }
 
     /**
-     * Prompts for a move until
-     * @return
+     * Prompts for a single player setting.
+     * <p>
+     * Composed function of {@code promptAndChangePlayerAI}.
+     *
+     * @param prompt Prompt to display
+     * @return {@code true} for AI controlled, {@code false} otherwise
+     *
+     * @see #promptAndChangePlayerAI()
+     */
+    private boolean promptPlayerAI(String prompt) {
+        var choice = promptUntilMenuChoice(prompt, PlayerMenu.class);
+        return ( choice == PlayerMenu.AI );
+    }
+
+    /**
+     * Prompts for a move until a valid move for the current game state is input.
+     *
+     * @return Coordinates of a valid move.
      */
     private Coordinates promptForNextMoveUntilValid() {
         Coordinates move;
@@ -305,6 +325,15 @@ public class UserInterface extends org.example.ui.UserInterface {
         return move;
     }
 
+    /**
+     * Prompts for a single move.
+     * <p>
+     * Composed function of {@code promptForNextMoveUntilValid}.
+     *
+     * @return Coordinates of a move.
+     *
+     * @see #promptForNextMoveUntilValid()
+     */
     private Coordinates promptForNextMove() {
         int x = promptUntil("x: ", s -> coordinateParser(s, game.width()) );
         int y = promptUntil("y: ", s -> coordinateParser(s, game.height()) );
@@ -312,6 +341,9 @@ public class UserInterface extends org.example.ui.UserInterface {
         return new Coordinates(x, y);
     }
 
+    /**
+     * Displays game state, queries and executes a move until {@code game} ends, then displays final state.
+     */
     private void gameInputLoop() {
         do {
             System.out.println(); // blank line separator
@@ -327,11 +359,16 @@ public class UserInterface extends org.example.ui.UserInterface {
         displayFinalState();
     }
 
+    /**
+     * Queries either human or AI for the next move depending on the {@code aiActive} status for current player's {@code Color}.
+     *
+     * @return Coordinates of next move
+     */
     private Coordinates queryNextMove() {
         Coordinates nextMove;
 
         if ( aiActive.get(game.currentPlayer().color()) ) {
-            nextMove = RandomAI.nextMove(game);
+            nextMove = RandomAI.nextMove(game); // demo only supports RandomAI
         }
         else {
             nextMove = promptForNextMoveUntilValid();
@@ -340,6 +377,20 @@ public class UserInterface extends org.example.ui.UserInterface {
         return nextMove;
     }
 
+    /**
+     * Parses a coordinate from input.
+     * Throws a descriptive {@code IllegalArgumentException} for use with {@code promptUntil} if parsing fails.
+     * <p>
+     * Composed function of {@code promptForNextMove}.
+     *
+     * @param input Input to parse
+     * @param limit Upper bound for coordinate
+     * @return Coordinate
+     *
+     * @throws IllegalArgumentException If not a number or not within bounds
+     *
+     * @see #promptForNextMove()
+     */
     private int coordinateParser(String input, int limit) {
         int x = intParser(input);
         if ( x < 0 || x >= limit ) throw new IllegalArgumentException(
@@ -349,6 +400,19 @@ public class UserInterface extends org.example.ui.UserInterface {
         return x;
     }
 
+    /**
+     * Parses a board side from input.
+     * Throws a descriptive {@code IllegalArgumentException} for use with {@code promptUntil} if parsing fails.
+     * <p>
+     * Composed function of {@code promptAndChangeBoardSize}.
+     *
+     * @param input Input to parse
+     * @return Board side
+     *
+     * @throws IllegalArgumentException If not a number, not multiple of 2 or less than 4
+     *
+     * @see #promptAndChangeBoardSize()
+     */
     private int sizeParser(String input) {
         int size = intParser(input);
         if ( size < 4 || size % 2 != 0 ) throw new IllegalArgumentException(
@@ -358,6 +422,20 @@ public class UserInterface extends org.example.ui.UserInterface {
         return size;
     }
 
+    /**
+     * Parses a signed integer from input.
+     * Throws a descriptive {@code IllegalArgumentException} for use with {@code promptUntil} if parsing fails.
+     * <p>
+     * Composed function of {@code sizeParser} and {@code coordinateParser}.
+     *
+     * @param input Input to parse
+     * @return Signed integer
+     *
+     * @throws IllegalArgumentException If not a number
+     *
+     * @see #sizeParser(String)
+     * @see #coordinateParser(String, int)
+     */
     private int intParser(String input) {
         int i;
 
