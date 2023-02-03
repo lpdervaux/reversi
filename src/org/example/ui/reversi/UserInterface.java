@@ -195,6 +195,7 @@ public class UserInterface extends org.example.ui.UserInterface {
      *
      * @see #displayState()
      */
+    // TODO: bottleneck for larger grids, replace with current simple implementation with StringBuilder
     private String buildIndexedGrid() {
         return buildGridHeader() + buildIndexedRows();
     }
