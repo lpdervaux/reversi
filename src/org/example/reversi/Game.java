@@ -305,22 +305,10 @@ public class Game {
      * @param direction Direction to check
      * @return Stream of coordinates of enclosed opposing tiles, which may be empty.
      */
-    // TODO: change this logic to use multiple takeWhile
     private Stream<Coordinates> enclose(Color color, Coordinates origin, Direction direction) {
-        return board.direction(origin, direction)
-            .skip(1) // skip origin tile
+        return board.direction(direction.next().apply(origin), direction)
             .takeWhile(c -> board.get(c) != Tile.FREE) // reduce to coordinates of contiguous non-FREE tiles
-            .filter(c -> board.get(c) == color.tile())
-            .findFirst() // reduce to coordinates of the first matching tile of color
-            .map(
-                match -> Stream.iterate(
-                    origin,
-                    c -> !c.equals(match),
-                    direction.next()
-                )
-                .skip(1)
-            ) // map to stream of coordinates from origin to match
-            .orElse(Stream.empty()); // or an empty stream if no match was found
+            .takeWhile(c -> board.get(c) == color.versus().tile() ); // reduce to coordinates of contiguous opposing tiles
     }
 
     //
