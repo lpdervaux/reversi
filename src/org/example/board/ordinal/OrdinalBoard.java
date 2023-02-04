@@ -12,7 +12,7 @@ import java.util.stream.Stream;
  */
 public class OrdinalBoard<T> extends Board<T> {
     /**
-     * Construct a board of {@code width} and {@code height} from {@code list}.
+     * Constructs a board of {@code width} and {@code height} from {@code list}.
      *
      * @param list List of exactly {@code width * height} elements
      * @param width Board width, non-zero positive
@@ -25,7 +25,7 @@ public class OrdinalBoard<T> extends Board<T> {
     }
 
     /**
-     * Construct an equal sided board of {@code side} from {@code list}.
+     * Constructs an equal sided board of {@code side} from {@code list}.
      *
      * @param list List of exactly {@code side * side} elements
      * @param side Board side, non-zero positive
@@ -37,7 +37,7 @@ public class OrdinalBoard<T> extends Board<T> {
     }
 
     /**
-     * Copy constructor.
+     * Copy constructor
      *
      * @param board Source to copy
      */
