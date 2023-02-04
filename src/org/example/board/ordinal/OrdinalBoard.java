@@ -12,28 +12,37 @@ import java.util.stream.Stream;
  */
 public class OrdinalBoard<T> extends Board<T> {
     /**
-     * Wraps {@code list} to defines a board of {@code width} and {@code height}.
+     * Construct a board of {@code width} and {@code height} from {@code list}.
      *
-     * @param list List of exactly {@code width * height} size to wrap
+     * @param list List of exactly {@code width * height} elements
      * @param width Board width, non-zero positive
      * @param height Board height, non-zero positive
      *
-     * @throws IllegalArgumentException If {@code list.size()} is not equal to {@code width * height}
+     * @throws IllegalArgumentException If any argument is invalid
      */
     public OrdinalBoard(List<T> list, int width, int height) {
         super(list, width, height);
     }
 
     /**
-     * Wraps {@code list} to define a board of equal sides of {@code side}.
+     * Construct an equal sided board of {@code side} from {@code list}.
      *
-     * @param list List of exactly {@code side * side} size to wrap
+     * @param list List of exactly {@code side * side} elements
      * @param side Board side, non-zero positive
      *
-     * @throws IllegalArgumentException If {@code list.size()} is not equal to {@code side * side}
+     * @throws IllegalArgumentException If any argument is invalid
      */
     public OrdinalBoard(List<T> list, int side) {
         super(list, side);
+    }
+
+    /**
+     * Copy constructor.
+     *
+     * @param board Source to copy
+     */
+    public OrdinalBoard(OrdinalBoard<T> board) {
+        super(board);
     }
 
     /**

@@ -1,5 +1,6 @@
 package org.example.board;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -15,13 +16,13 @@ public class Board<T> {
     private final int height;
 
     /**
-     * Wraps {@code list} to defines a board of {@code width} and {@code height}.
+     * Construct a board of {@code width} and {@code height} from {@code list}.
      *
-     * @param list List of exactly {@code width * height} size to wrap
+     * @param list List of exactly {@code width * height} elements
      * @param width Board width, non-zero positive
      * @param height Board height, non-zero positive
      *
-     * @throws IllegalArgumentException If {@code list.size()} is not equal to {@code width * height}
+     * @throws IllegalArgumentException If any argument is invalid
      */
     public Board(List<T> list, int width, int height) throws IllegalArgumentException {
         if (
@@ -29,21 +30,30 @@ public class Board<T> {
             || height <= 0
             || list.size() != width * height
         ) throw new IllegalArgumentException();
+        this.board = new ArrayList<>(list);
         this.width = width;
         this.height = height;
-        this.board = list;
     }
 
     /**
-     * Wraps {@code list} to define a board of equal sides of {@code side}.
+     * Construct an equal sided board of {@code side} from {@code list}.
      *
-     * @param list List of exactly {@code side * side} size to wrap
+     * @param list List of exactly {@code side * side} elements
      * @param side Board side, non-zero positive
      *
-     * @throws IllegalArgumentException If {@code list.size()} is not equal to {@code side * side}
+     * @throws IllegalArgumentException If any argument is invalid
      */
     public Board(List<T> list, int side) throws IllegalArgumentException {
         this(list, side, side);
+    }
+
+    /**
+     * Copy constructor.
+     *
+     * @param board Source to copy
+     */
+    public Board(Board<T> board) {
+        this(board.board, board.width, board.height);
     }
 
     /**
