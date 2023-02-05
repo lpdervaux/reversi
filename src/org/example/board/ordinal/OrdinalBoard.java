@@ -90,16 +90,4 @@ public class OrdinalBoard<T> extends Board<T> {
                 : new Coordinates(c.x() + 1, c.y())
         );
     }
-
-    /**
-     * Get a stream of coordinates from {@code origin} to an edge of the board in {@code direction}.
-     *
-     * @param origin Starting coordinates
-     * @param direction Direction to traverse
-     * @return A stream of coordinates from origin inclusive to the edge of the board, which may be empty if origin is not within the board
-     */
-    // TODO: to be removed
-    public Stream<Coordinates> direction(Coordinates origin, Direction direction) {
-        return Stream.iterate(origin, this::validate, direction.getNextOperator());
-    }
 }
