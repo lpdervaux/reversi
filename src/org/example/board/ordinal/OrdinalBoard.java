@@ -41,7 +41,7 @@ public class OrdinalBoard<T> extends Board<T> {
      *
      * @param source Source to copy
      */
-    public OrdinalBoard(OrdinalBoard<T> source) {
+    public OrdinalBoard(Board<T> source) {
         super(source);
     }
 
