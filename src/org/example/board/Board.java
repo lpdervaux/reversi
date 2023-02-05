@@ -16,36 +16,31 @@ public class Board<T> {
     private final int height;
 
     /**
-     * Constructs a board of {@code width} and {@code height} from {@code list}.
+     * Constructs a board of {@code width} and {@code height}.
      *
-     * @param list List of exactly {@code width * height} elements
      * @param width Board width, non-zero positive
      * @param height Board height, non-zero positive
      *
      * @throws IllegalArgumentException If any argument is invalid
      */
-    // TODO: there is no point in providing a source list if coordinates to index translation is implementation dependant
-    public Board(List<T> list, int width, int height) throws IllegalArgumentException {
-        if (
-            width <= 0
-            || height <= 0
-            || list.size() != width * height
-        ) throw new IllegalArgumentException();
-        this.board = new ArrayList<>(list);
+    public Board(int width, int height) throws IllegalArgumentException {
+        if ( width <= 0 || height <= 0 )
+            throw new IllegalArgumentException();
+
+        this.board = new ArrayList<>(width * height);
         this.width = width;
         this.height = height;
     }
 
     /**
-     * Constructs an equal sided board of {@code side} from {@code list}.
+     * Constructs an equal sided board of {@code side}.
      *
-     * @param list List of exactly {@code side * side} elements
      * @param side Board side, non-zero positive
      *
-     * @throws IllegalArgumentException If any argument is invalid
+     * @throws IllegalArgumentException If {@code side} is invalid
      */
-    public Board(List<T> list, int side) throws IllegalArgumentException {
-        this(list, side, side);
+    public Board(int side) throws IllegalArgumentException {
+        this(side, side);
     }
 
     /**
@@ -54,7 +49,9 @@ public class Board<T> {
      * @param source Source to copy
      */
     public Board(Board<T> source) {
-        this(source.board, source.width, source.height);
+        this.board = new ArrayList<>(source.board);
+        this.width = source.width;
+        this.height = source.height;
     }
 
     /**

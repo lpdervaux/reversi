@@ -48,7 +48,6 @@ public class Game {
 
         // create board from a fixed size List
         this.board = new OrdinalBoard<>(
-            Arrays.asList(new Tile[width * height]),
             width, height
         );
 

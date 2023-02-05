@@ -2,7 +2,6 @@ package org.example.board.ordinal;
 
 import org.example.board.Board;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -12,28 +11,26 @@ import java.util.stream.Stream;
  */
 public class OrdinalBoard<T> extends Board<T> {
     /**
-     * Constructs a board of {@code width} and {@code height} from {@code list}.
+     * Constructs a board of {@code width} and {@code height}.
      *
-     * @param list List of exactly {@code width * height} elements
      * @param width Board width, non-zero positive
      * @param height Board height, non-zero positive
      *
      * @throws IllegalArgumentException If any argument is invalid
      */
-    public OrdinalBoard(List<T> list, int width, int height) {
-        super(list, width, height);
+    public OrdinalBoard(int width, int height) {
+        super(width, height);
     }
 
     /**
-     * Constructs an equal sided board of {@code side} from {@code list}.
+     * Constructs an equal sided board of {@code side}.
      *
-     * @param list List of exactly {@code side * side} elements
      * @param side Board side, non-zero positive
      *
-     * @throws IllegalArgumentException If any argument is invalid
+     * @throws IllegalArgumentException If {@code side} is invalid
      */
-    public OrdinalBoard(List<T> list, int side) {
-        this(list, side, side);
+    public OrdinalBoard(int side) {
+        this(side, side);
     }
 
     /**
