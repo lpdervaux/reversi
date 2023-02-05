@@ -104,21 +104,14 @@ public class Game {
      */
     public void next(Coordinates move) throws IllegalStateException, IllegalArgumentException {
         if ( over ) throw new IllegalStateException();
-        if ( !validate(move) ) throw new IllegalArgumentException(); // duplicate check
+        if ( !validate(move) ) throw new IllegalArgumentException(); // duplicate check?
 
-        setAndUpdate(move);
-    }
-
-    // TODO: trivial, single use legacy function to be removed
-    private void setAndUpdate(Coordinates move) {
         var enclosed = board.move(currentPlayer.color(), move);
         updateState(enclosed);
     }
 
     /**
      * Updates game state following a move.
-     * <p>
-     * Composed method of {@code setAndUpdateState}
      *
      * @param enclosed Number of opposing tiles captured by current player
      */
