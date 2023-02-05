@@ -33,7 +33,7 @@ public class OrdinalBoard<T> extends Board<T> {
      * @throws IllegalArgumentException If any argument is invalid
      */
     public OrdinalBoard(List<T> list, int side) {
-        super(list, side);
+        this(list, side, side);
     }
 
     /**
