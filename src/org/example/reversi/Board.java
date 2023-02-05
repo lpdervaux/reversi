@@ -7,7 +7,6 @@ import org.example.board.ordinal.OrdinalBoard;
 import java.util.*;
 import java.util.stream.Stream;
 
-
 /**
  * Represents a Reversi board.
  */
