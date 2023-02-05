@@ -28,6 +28,7 @@ public class Board<T> {
             throw new IllegalArgumentException();
 
         this.board = new ArrayList<>(width * height);
+        IntStream.range(0, width * height).forEach(i -> board.add(null));
         this.width = width;
         this.height = height;
     }
