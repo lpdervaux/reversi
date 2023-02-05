@@ -23,7 +23,7 @@ public class RandomAI {
      * @throws IllegalArgumentException If game is over
      */
     static public Coordinates nextMove(Game game) {
-        if ( game.over() ) throw new IllegalArgumentException();
+        if ( game.isOver() ) throw new IllegalArgumentException();
 
         var moves = game.findValidMoves()
             .limit(LIMIT)

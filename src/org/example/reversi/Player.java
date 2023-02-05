@@ -18,21 +18,21 @@ public class Player {
     /**
      * @return {@code Player}'s color
      */
-    public Color color() {
+    public Color getColor() {
         return color;
     }
 
     /**
      * @return Opposing {@code Player}
      */
-    public Player versus() {
+    public Player getVersus() {
         return versus;
     }
 
     /**
      * @return {@code Player}'s score
      */
-    public int score() {
+    public int getScore() {
         return score;
     }
 }

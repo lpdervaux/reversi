@@ -16,8 +16,8 @@ public class AIMatch {
 
     public static void runAIGame(Game game) {
         do {
-            game.next(RandomAI.nextMove(game));
-        } while ( !game.over() );
+            game.nextMove(RandomAI.nextMove(game));
+        } while ( !game.isOver() );
     }
 
     public static void main(String[] args) {
@@ -34,8 +34,8 @@ public class AIMatch {
             Turn: %d
             Score: %s %d %s %d
             """,
-            game.turn(),
-            game.white().color(), game.white().score(), game.black().color(), game.black().score()
+            game.getTurn(),
+            game.getWhite().getColor(), game.getWhite().getScore(), game.getBlack().getColor(), game.getBlack().getScore()
         );
     }
 }

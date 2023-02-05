@@ -23,14 +23,14 @@ public enum Color {
     /**
      * @return {@code Color}'s associated {@code Tile}
      */
-    public Tile tile() {
+    public Tile getTile() {
         return tile;
     }
 
     /**
      * @return {@code Color}'s opposite
      */
-    public Color versus() {
+    public Color getVersus() {
         return versus;
     }
 }

@@ -130,7 +130,7 @@ public class UserInterface extends org.example.ui.UserInterface {
      */
     private void displayCurrentState() {
         displayState();
-        System.out.printf("Player: %s%n", game.currentPlayer().color());
+        System.out.printf("Player: %s%n", game.getCurrentPlayer().getColor());
     }
 
     /**
@@ -154,12 +154,12 @@ public class UserInterface extends org.example.ui.UserInterface {
     private void displayFinalState() {
         displayState();
 
-        if ( game.white().score() == game.black().score() )
+        if ( game.getWhite().getScore() == game.getBlack().getScore() )
             System.out.println("Draw");
         else
             System.out.printf(
                 "Winner: %s%n",
-                ( game.white().score() > game.black().score() ) ? Color.WHITE : Color.BLACK
+                ( game.getWhite().getScore() > game.getBlack().getScore() ) ? Color.WHITE : Color.BLACK
             );
     }
 
@@ -178,7 +178,7 @@ public class UserInterface extends org.example.ui.UserInterface {
             Turn %d (W %d B %d)
             """,
             buildIndexedGrid(),
-            game.turn(), game.white().score(), game.black().score()
+            game.getTurn(), game.getWhite().getScore(), game.getBlack().getScore()
         );
     }
 
@@ -210,7 +210,7 @@ public class UserInterface extends org.example.ui.UserInterface {
     private String buildGridHeader() {
         return String.format(
             "  %s%n",
-            IntStream.range(0, game.width())
+            IntStream.range(0, game.getWidth())
                 .map(x -> x % 10)
                 .mapToObj(x -> String.format("%d ", x))
                 .collect(Collectors.joining())
@@ -227,12 +227,12 @@ public class UserInterface extends org.example.ui.UserInterface {
      * @see #buildIndexedGrid()
      */
     private String buildIndexedRows() {
-        return IntStream.range(0, game.height())
+        return IntStream.range(0, game.getHeight())
             .mapToObj(
                 y -> String.format(
                     "%d %s%n",
                     y % 10,
-                    game.row(y)
+                    game.getRow(y)
                         .map(tileMap::get)
                         .map(s -> String.format("%s ", s))
                         .collect(Collectors.joining())
@@ -354,7 +354,7 @@ public class UserInterface extends org.example.ui.UserInterface {
         System.out.println("Please input next move");
         move = promptForNextMove();
 
-        while ( !game.validate(move) ) {
+        while ( !game.isValidMove(move) ) {
             System.out.printf("[%d, %d] is not a valid move%n", move.x(), move.y());
             move = promptForNextMove();
         }
@@ -372,8 +372,8 @@ public class UserInterface extends org.example.ui.UserInterface {
      * @see #promptForNextMoveUntilValid()
      */
     private Coordinates promptForNextMove() {
-        int x = promptUntil("x: ", s -> coordinateParser(s, game.width()) );
-        int y = promptUntil("y: ", s -> coordinateParser(s, game.height()) );
+        int x = promptUntil("x: ", s -> coordinateParser(s, game.getWidth()) );
+        int y = promptUntil("y: ", s -> coordinateParser(s, game.getHeight()) );
 
         return new Coordinates(x, y);
     }
@@ -471,8 +471,8 @@ public class UserInterface extends org.example.ui.UserInterface {
             Coordinates nextMove = queryNextMove();
             displayNextMove(nextMove);
 
-            game.next(nextMove);
-        } while ( !game.over() );
+            game.nextMove(nextMove);
+        } while ( !game.isOver() );
 
         System.out.println(); // blank line separator
         displayFinalState();
@@ -486,7 +486,7 @@ public class UserInterface extends org.example.ui.UserInterface {
     private Coordinates queryNextMove() {
         Coordinates nextMove;
 
-        if ( aiActive.get(game.currentPlayer().color()) ) {
+        if ( aiActive.get(game.getCurrentPlayer().getColor()) ) {
             nextMove = RandomAI.nextMove(game); // demo only supports RandomAI
         }
         else {

@@ -25,10 +25,10 @@ public class Game {
         // set initial center tiles as:
         // w b
         // b w
-        var northWest = new Coordinates(initial.width() / 2 - 1, initial.height() / 2 - 1);
-        var northEast = Direction.EAST.next().apply(northWest);
-        var southWest = Direction.SOUTH.next().apply(northWest);
-        var southEast = Direction.SOUTHEAST.next().apply(northWest);
+        var northWest = new Coordinates(initial.getWidth() / 2 - 1, initial.getHeight() / 2 - 1);
+        var northEast = Direction.EAST.getNextOperator().apply(northWest);
+        var southWest = Direction.SOUTH.getNextOperator().apply(northWest);
+        var southEast = Direction.SOUTHEAST.getNextOperator().apply(northWest);
         initial.set(northWest, Tile.WHITE);
         initial.set(southEast, Tile.WHITE);
         initial.set(northEast, Tile.BLACK);
@@ -90,8 +90,15 @@ public class Game {
      * @param move Coordinates to check
      * @return {@code true} if coordinates are valid for next move, {@code false} otherwise
      */
-    public boolean validate(Coordinates move) {
-        return board.isValidMove(currentPlayer.color(), move);
+    public boolean isValidMove(Coordinates move) {
+        return board.isValidMove(currentPlayer.getColor(), move);
+    }
+
+    /**
+     * @return All valid moves
+     */
+    public Stream<Coordinates> findValidMoves() {
+        return board.findAllValidMoves(currentPlayer.getColor());
     }
 
     /**
@@ -102,91 +109,61 @@ public class Game {
      * @throws IllegalStateException If game is over
      * @throws IllegalArgumentException If passed an invalid move
      */
-    public void next(Coordinates move) throws IllegalStateException, IllegalArgumentException {
+    public void nextMove(Coordinates move) throws IllegalStateException, IllegalArgumentException {
         if ( over ) throw new IllegalStateException();
-        if ( !validate(move) ) throw new IllegalArgumentException(); // duplicate check?
+        if ( !isValidMove(move) ) throw new IllegalArgumentException(); // duplicate check?
 
-        var enclosed = board.move(currentPlayer.color(), move);
+        var enclosed = board.nextMove(currentPlayer.getColor(), move);
         updateState(enclosed);
-    }
-
-    /**
-     * Updates game state following a move.
-     *
-     * @param enclosed Number of opposing tiles captured by current player
-     */
-    private void updateState(int enclosed) {
-        currentPlayer.score += enclosed + 1;
-        currentPlayer.versus().score -= enclosed;
-
-        if (
-            board.findAnyValidMove(
-                    currentPlayer.versus().color()
-                )
-                .isPresent()
-        ) {
-            currentPlayer = currentPlayer.versus();
-            turn += 1;
-        }
-        else {
-            over = true;
-        }
     }
 
     /**
      * @return Game board width
      */
-    public int width() {
+    public int getWidth() {
         return board.getWidth();
     }
 
     /**
      * @return Game board height
      */
-    public int height() {
+    public int getHeight() {
         return board.getHeight();
     }
 
     /**
      * @return White of this game
      */
-    public Player white() {
+    public Player getWhite() {
         return white;
     }
 
     /**
      * @return Black of this game
      */
-    public Player black() {
+    public Player getBlack() {
         return black;
     }
 
     /**
      * @return Turn count
      */
-    public int turn() {
+    public int getTurn() {
         return turn;
     }
 
     /**
      * @return Player for current turn
      */
-    public Player currentPlayer() {
+    public Player getCurrentPlayer() {
         return currentPlayer;
     }
 
     /**
      * @return {@code true} if game is over, {@code false} otherwise
      */
-    public boolean over() {
+    public boolean isOver() {
         return over;
-    }
-
-    /**
-     * @return All valid moves
-     */
-    public Stream<Coordinates> findValidMoves() {
-        return board.findAllValidMoves(currentPlayer.color());
     }
 
     /**
@@ -195,7 +172,32 @@ public class Game {
      *
      * @throws IndexOutOfBoundsException If index is not within board
      */
-    public Stream<Tile> row(int y) throws IndexOutOfBoundsException {
+    public Stream<Tile> getRow(int y) throws IndexOutOfBoundsException {
         return board.getRow(y);
+    }
+
+    /**
+     * Updates game state following a move.
+     *
+     * @param enclosed Number of opposing tiles captured by current player
+     *
+     * @see #nextMove(Coordinates)
+     */
+    private void updateState(int enclosed) {
+        currentPlayer.score += enclosed + 1;
+        currentPlayer.getVersus().score -= enclosed;
+
+        if (
+            board.findAnyValidMove(
+                    currentPlayer.getVersus().getColor()
+                )
+                .isPresent()
+        ) {
+            currentPlayer = currentPlayer.getVersus();
+            turn += 1;
+        }
+        else {
+            over = true;
+        }
     }
 }

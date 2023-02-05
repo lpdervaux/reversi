@@ -54,14 +54,14 @@ public enum Direction {
     /**
      * @return A function that produces the next set of {@code Coordinates}
      */
-    public UnaryOperator<Coordinates> next() {
+    public UnaryOperator<Coordinates> getNextOperator() {
         return next;
     }
 
     /**
      * @return Opposite direction
      */
-    public Direction versus() {
+    public Direction getVersus() {
         return versus;
     }
 }

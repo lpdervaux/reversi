@@ -72,14 +72,14 @@ public class Board<E> {
     /**
      * @return Width of this board
      */
-    public int width() {
+    public int getWidth() {
         return width;
     }
 
     /**
      * @return Height of this board
      */
-    public int height() {
+    public int getHeight() {
         return height;
     }
 
@@ -90,10 +90,10 @@ public class Board<E> {
      * @param y Vertical axis coordinate
      * @return {@code true} if (x y) points within the board, {@code false} otherwise
      */
-    public boolean validate(int x, int y) {
+    public boolean isValid(int x, int y) {
         return (
             x >= 0 && x < width
-            && y >= 0 && y < height
+                && y >= 0 && y < height
         );
     }
 
@@ -107,7 +107,7 @@ public class Board<E> {
      * @throws IndexOutOfBoundsException If (x y) does not point within the board
      */
     public E get(int x, int y) throws IndexOutOfBoundsException {
-        if ( !validate(x, y) ) throw new IndexOutOfBoundsException();
+        if ( !isValid(x, y) ) throw new IndexOutOfBoundsException();
         return board.get(linearIndex(x, y));
     }
 
@@ -121,15 +121,8 @@ public class Board<E> {
      * @throws IndexOutOfBoundsException If (x y) does not point within the board
      */
     public void set(int x, int y, E e) {
-        if ( !validate(x, y) ) throw new IndexOutOfBoundsException();
+        if ( !isValid(x, y) ) throw new IndexOutOfBoundsException();
         board.set(linearIndex(x, y), e);
-    }
-
-    /**
-     * @return Ordered stream of all elements in row-major order
-     */
-    public Stream<E> stream() {
-        return board.stream();
     }
 
     /**
@@ -138,7 +131,7 @@ public class Board<E> {
      *
      * @throws IndexOutOfBoundsException If index is not within the board
      */
-    public Stream<E> row(int y) throws IndexOutOfBoundsException {
+    public Stream<E> getRow(int y) throws IndexOutOfBoundsException {
         if ( y < 0 || y >= height ) throw new IndexOutOfBoundsException();
         return IntStream.range(0, width)
             .mapToObj(x -> get(x, y));
@@ -150,9 +143,16 @@ public class Board<E> {
      *
      * @throws IndexOutOfBoundsException If index is not within the board
      */
-    public Stream<E> column(int x) throws IndexOutOfBoundsException {
+    public Stream<E> getColumn(int x) throws IndexOutOfBoundsException {
         if ( x < 0 || x >= width ) throw new IndexOutOfBoundsException();
         return IntStream.range(0, height)
             .mapToObj(y -> get(x, y));
+    }
+
+    /**
+     * @return Ordered stream of all elements in row-major order
+     */
+    public Stream<E> stream() {
+        return board.stream();
     }
 }

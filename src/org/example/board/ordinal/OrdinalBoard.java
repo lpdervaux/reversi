@@ -51,7 +51,7 @@ public class OrdinalBoard<T> extends Board<T> {
      * @return {@code true} if coordinates point within the board, {@code false} otherwise
      */
     public boolean validate(Coordinates co) {
-        return validate(co.x(), co.y());
+        return isValid(co.x(), co.y());
     }
 
     /**
@@ -84,8 +84,8 @@ public class OrdinalBoard<T> extends Board<T> {
     public Stream<Coordinates> traverse() {
         return Stream.iterate(
             new Coordinates(0, 0),
-            c -> ( c.y() < height() ),
-            c -> ( c.x() == width() - 1 )
+            c -> ( c.y() < getHeight() ),
+            c -> ( c.x() == getWidth() - 1 )
                 ? new Coordinates(0, c.y() + 1)
                 : new Coordinates(c.x() + 1, c.y())
         );
@@ -98,7 +98,8 @@ public class OrdinalBoard<T> extends Board<T> {
      * @param direction Direction to traverse
      * @return A stream of coordinates from origin inclusive to the edge of the board, which may be empty if origin is not within the board
      */
+    // TODO: to be removed
     public Stream<Coordinates> direction(Coordinates origin, Direction direction) {
-        return Stream.iterate(origin, this::validate, direction.next());
+        return Stream.iterate(origin, this::validate, direction.getNextOperator());
     }
 }

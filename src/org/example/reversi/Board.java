@@ -22,7 +22,7 @@ public class Board {
     public Board(org.example.board.Board<Tile> initial) {
         this.board = new OrdinalBoard<>(initial);
 
-        var capacity = board.width() * board.height() / 2;
+        var capacity = board.getWidth() * board.getHeight() / 2;
         this.edges = new HashSet<>(capacity);
         initializeEdges();
     }
@@ -41,14 +41,14 @@ public class Board {
      * @return Gets board width
      */
     public int getWidth() {
-        return board.width();
+        return board.getWidth();
     }
 
     /**
      * @return Gets board height
      */
     public int getHeight() {
-        return  board.height();
+        return  board.getHeight();
     }
 
     /**
@@ -60,7 +60,7 @@ public class Board {
      * @throws IndexOutOfBoundsException If index is not within board
      */
     public Stream<Tile> getRow(int y) throws IndexOutOfBoundsException {
-        return board.row(y);
+        return board.getRow(y);
     }
 
     /**
@@ -72,17 +72,17 @@ public class Board {
      *
      * @throws IllegalArgumentException If move is invalid
      */
-    public int move(Color color, Coordinates move) throws IllegalArgumentException {
+    public int nextMove(Color color, Coordinates move) throws IllegalArgumentException {
         if ( !isValidMove(color, move) ) throw new IllegalArgumentException();
 
-        board.set(move, color.tile());
+        board.set(move, color.getTile());
         updateEdges(move);
 
         return encloseAll(color, move)
             .reduce(
                 0,
                 (a, c) -> {
-                    board.set(c, color.tile());
+                    board.set(c, color.getTile());
                     return a + 1;
                 },
                 Integer::sum
@@ -149,7 +149,7 @@ public class Board {
     private void updateEdges(Coordinates center) {
         edges.remove(center);
         Arrays.stream(Direction.values())
-            .map(d -> d.next().apply(center))
+            .map(d -> d.getNextOperator().apply(center))
             .filter(c -> board.validate(c) && board.get(c) == Tile.FREE)
             .forEach(edges::add);
     }
@@ -168,7 +168,7 @@ public class Board {
     private boolean encloseAny(Color color, Coordinates origin) {
         return Arrays.stream(Direction.values())
             .anyMatch(
-                d -> findMatch(color, d.next().apply(origin), d)
+                d -> findMatch(color, d.getNextOperator().apply(origin), d)
                     .isPresent()
             );
     }
@@ -184,7 +184,7 @@ public class Board {
      */
     private Stream<Coordinates> encloseAll(Color color, Coordinates origin) {
         return Arrays.stream(Direction.values())
-            .flatMap(d -> encloseAll(color, d.next().apply(origin), d));
+            .flatMap(d -> encloseAll(color, d.getNextOperator().apply(origin), d));
     }
 
     /**
@@ -202,7 +202,7 @@ public class Board {
                 m -> Stream.iterate(
                     start,
                     c -> !c.equals(m),
-                    direction.next()
+                    direction.getNextOperator()
                 )
             )
             .orElse(Stream.empty());
@@ -220,9 +220,9 @@ public class Board {
         return Stream.iterate(
                 start,
                 c -> ( board.validate(c) && board.get(c) != Tile.FREE ), // contiguous non-free tiles
-                direction.next()
+                direction.getNextOperator()
             )
-            .filter(c -> board.get(c) == color.tile()) // matches
+            .filter(c -> board.get(c) == color.getTile()) // matches
             .findFirst()
             .filter(c -> !c.equals(start)); // encloses at least one tile
     }
