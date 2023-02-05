@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 /**
- * Represents a Reversi board.
+ * Board that implements the enclosing rules of Reversi.
  */
 public class Board {
     private final OrdinalBoard<Tile> board;
@@ -35,6 +35,32 @@ public class Board {
     public Board(Board source) {
         this.board = new OrdinalBoard<>(source.board);
         this.edges = new HashSet<>(source.edges);
+    }
+
+    /**
+     * @return Gets board width
+     */
+    public int getWidth() {
+        return board.width();
+    }
+
+    /**
+     * @return Gets board height
+     */
+    public int getHeight() {
+        return  board.height();
+    }
+
+    /**
+     * Gets row.
+     *
+     * @param y Row index
+     * @return Ordered stream of tiles
+     *
+     * @throws IndexOutOfBoundsException If index is not within board
+     */
+    public Stream<Tile> getRow(int y) throws IndexOutOfBoundsException {
+        return board.row(y);
     }
 
     /**
