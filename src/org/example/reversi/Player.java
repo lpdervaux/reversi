@@ -3,7 +3,6 @@ package org.example.reversi;
 /**
  * Represents white or black for a specific {@code Game} with associated {@code Color}, opponent and score.
  */
-// TODO: may be an inner static class of Game; Game is already fairly large however
 public class Player {
     private final Color color; // color
     protected Player versus; // opponent
