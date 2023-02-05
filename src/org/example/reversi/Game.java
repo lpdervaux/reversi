@@ -12,6 +12,15 @@ import java.util.stream.Stream;
  * Game that implements the rules of Reversi.
  */
 public class Game {
+    /**
+     * Builds an {@code OrdinalBoard} of {@code width} and {@code height} with the initial game setup.
+     *
+     * @param width Multiple of 2 greater than or equal to 4
+     * @param height Multiple of 2 greater than or equal to 4
+     * @return Correctly initialized board
+     *
+     * @see #Game(int, int)
+     */
     static private OrdinalBoard<Tile> buildInitialBoardState(int width, int height) {
         var initial = new OrdinalBoard<>(Tile.FREE, width, height);
 
@@ -39,12 +48,19 @@ public class Game {
     private Player currentPlayer; // color for current turn
     private boolean over; // is game over?
 
+    /**
+     * Constructs a game of Reversi on a board of {@code width} and {@code height}.
+     *
+     * @param width Multiple of 2 greater than or equal to 4
+     * @param height Multiple of 2 greater than or equal to 4
+     * @throws IllegalArgumentException If any size is invalid
+     */
     public Game(int width, int height) throws IllegalArgumentException {
         if (
             width < 4
-                || height < 4
-                || width % 2 != 0
-                || height % 2 != 0
+            || height < 4
+            || width % 2 != 0
+            || height % 2 != 0
         )
             throw new IllegalArgumentException();
 
@@ -60,6 +76,12 @@ public class Game {
         over = false;
     }
 
+    /**
+     * Constructs a game of Reversi on am equal sided board of {@code side}.
+     *
+     * @param side Multiple of 2 greater than or equal to 4
+     * @throws IllegalArgumentException If side is invalid
+     */
     public Game(int side) throws IllegalArgumentException {
         this(side, side);
     }
@@ -84,11 +106,12 @@ public class Game {
      */
     public void next(Coordinates move) throws IllegalStateException, IllegalArgumentException {
         if ( over ) throw new IllegalStateException();
-        if ( !validate(move) ) throw new IllegalArgumentException(); // duplicate
+        if ( !validate(move) ) throw new IllegalArgumentException(); // duplicate check
 
         setAndUpdate(move);
     }
 
+    // TODO: trivial, single use legacy function to be removed
     private void setAndUpdate(Coordinates move) {
         var enclosed = board.move(currentPlayer.color(), move);
         updateState(enclosed);
