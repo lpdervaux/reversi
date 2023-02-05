@@ -12,8 +12,10 @@ public class RandomAI {
     // non-instantiable
     private RandomAI() {}
 
+    static private final int LIMIT = 10;
+
     /**
-     * Selects a random valid move for a game.
+     * Selects a random valid move for a game. Searches for up to 10 moves.
      *
      * @param game Game to compute next move for
      * @return Random valid move
@@ -23,9 +25,12 @@ public class RandomAI {
     static public Coordinates nextMove(Game game) {
         if ( game.over() ) throw new IllegalArgumentException();
 
-        var moves = game.validMoves();
+        var moves = game.findValidMoves()
+            .limit(LIMIT)
+            .toList();
+
         return moves.get(
-            ThreadLocalRandom.current().nextInt(moves.size())
-        );
+                ThreadLocalRandom.current().nextInt(moves.size())
+            );
     }
 }

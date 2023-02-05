@@ -4,8 +4,6 @@ import org.example.board.ordinal.Coordinates;
 import org.example.board.ordinal.Direction;
 import org.example.board.ordinal.OrdinalBoard;
 
-import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -191,9 +189,11 @@ public class Game {
         return over;
     }
 
-    // TODO: get rid of this, implement randomAI some other way (findNMoves, findAnyMove etc)
-    public List<Coordinates> validMoves() {
-        return board.findAllValidMoves(currentPlayer.color()).collect(Collectors.toList());
+    /**
+     * @return All valid moves
+     */
+    public Stream<Coordinates> findValidMoves() {
+        return board.findAllValidMoves(currentPlayer.color());
     }
 
     /**
