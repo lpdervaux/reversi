@@ -27,6 +27,7 @@ public class UserInterface extends org.example.ui.UserInterface {
     static private final int DEFAULT_WIDTH = 8;
     static private final int DEFAULT_HEIGHT = 8;
 
+    // TODO: Tile maps into their own static classes
     // tile maps
     static private final Map<Tile, String> DOT_TILE_MAP = Map
         .ofEntries(
@@ -42,6 +43,7 @@ public class UserInterface extends org.example.ui.UserInterface {
             Map.entry(Tile.FREE, ".")
         );
 
+    // TODO: Menus into their own classes, probably static
     // menus
     static private final Map<String, String> START_MENU;
     static private final Map<String, String> PLAYER_MENU;
@@ -171,13 +173,11 @@ public class UserInterface extends org.example.ui.UserInterface {
      * @see #displayCurrentState()
      * @see #displayFinalState()
      */
+    // TODO: Console IO is a bottleneck for large board size, add an option to only display turns or only final result for AI matches
     private void displayState() {
+        System.out.println(buildIndexedGrid());
         System.out.printf(
-            """
-            %s
-            Turn %d (W %d B %d)
-            """,
-            buildIndexedGrid(),
+            "Turn %d (W %d B %d)%n",
             game.getTurn(), game.getWhite().getScore(), game.getBlack().getScore()
         );
     }
@@ -195,51 +195,43 @@ public class UserInterface extends org.example.ui.UserInterface {
      *
      * @see #displayState()
      */
-    // TODO: bottleneck for larger grids, replace current simple implementation with StringBuilder
     private String buildIndexedGrid() {
-        return buildGridHeader() + buildIndexedRows();
-    }
+        var capacity = (game.getWidth() + 2) * 2 * (game.getHeight() + 1) + 10;
+        var builder = new StringBuilder(capacity);
 
-    /**
-     * Builds a grid header spanning {@code game.width()}.
-     * <p>
-     * Composed function of {@code buildIndexedGrid}.
-     *
-     * @return Newline-terminated grid header
-     */
-    private String buildGridHeader() {
-        return String.format(
-            "  %s%n",
-            IntStream.range(0, game.getWidth())
-                .map(x -> x % 10)
-                .mapToObj(x -> String.format("%d ", x))
-                .collect(Collectors.joining())
-        );
-    }
+        // header
+        builder.append("  ");
+        IntStream.range(0, game.getWidth())
+            .forEachOrdered(
+                x -> {
+                    builder.append(x % 10);
+                    builder.append(" ");
+                }
+            );
+        builder.append(System.lineSeparator());
 
-    /**
-     * Builds an indexed grid of {@code game.height()} lines where tiles are represented by {@code tileMap}.
-     * <p>
-     * Composed function of {@code buildIndexedGrid}.
-     *
-     * @return Newline-terminated indexed rows
-     *
-     * @see #buildIndexedGrid()
-     */
-    private String buildIndexedRows() {
-        return IntStream.range(0, game.getHeight())
-            .mapToObj(
-                y -> String.format(
-                    "%d %s%n",
-                    y % 10,
+        // rows
+        IntStream.range(0, game.getHeight())
+            .forEachOrdered(
+                y -> {
+                    builder.append(y % 10);
+                    builder.append(" ");
+
                     game.getRow(y)
-                        .map(tileMap::get)
-                        .map(s -> String.format("%s ", s))
-                        .collect(Collectors.joining())
-                )
-            )
-            .collect(Collectors.joining());
+                        .forEachOrdered(
+                            t -> {
+                                builder.append(tileMap.get(t));
+                                builder.append(" ");
+                            }
+                        );
+
+                    builder.append(System.lineSeparator());
+                }
+            );
+
+        return builder.toString();
     }
+
 
     //
     // Prompt related methods
