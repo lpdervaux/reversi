@@ -39,10 +39,10 @@ public class OrdinalBoard<T> extends Board<T> {
     /**
      * Copy constructor
      *
-     * @param board Source to copy
+     * @param source Source to copy
      */
-    public OrdinalBoard(OrdinalBoard<T> board) {
-        super(board);
+    public OrdinalBoard(OrdinalBoard<T> source) {
+        super(source);
     }
 
     /**

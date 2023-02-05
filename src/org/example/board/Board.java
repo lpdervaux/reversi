@@ -50,10 +50,10 @@ public class Board<T> {
     /**
      * Copy constructor
      *
-     * @param board Source to copy
+     * @param source Source to copy
      */
-    public Board(Board<T> board) {
-        this(board.board, board.width, board.height);
+    public Board(Board<T> source) {
+        this(source.board, source.width, source.height);
     }
 
     /**
