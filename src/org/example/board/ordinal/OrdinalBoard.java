@@ -11,26 +11,28 @@ import java.util.stream.Stream;
  */
 public class OrdinalBoard<T> extends Board<T> {
     /**
-     * Constructs a board of {@code width} and {@code height}.
+     * Constructs a board {@code width} and {@code height} with elements initialized to {@code initial}.
      *
+     * @param initial Initial value
      * @param width Board width, non-zero positive
      * @param height Board height, non-zero positive
      *
      * @throws IllegalArgumentException If any argument is invalid
      */
-    public OrdinalBoard(int width, int height) {
-        super(width, height);
+    public OrdinalBoard(T initial, int width, int height) {
+        super(initial, width, height);
     }
 
     /**
-     * Constructs an equal sided board of {@code side}.
+     * Constructs an equal sided board of {@code side} with elements initialized to {@code initial}.
      *
+     * @param initial Initial value
      * @param side Board side, non-zero positive
      *
      * @throws IllegalArgumentException If {@code side} is invalid
      */
-    public OrdinalBoard(int side) {
-        this(side, side);
+    public OrdinalBoard(T initial, int side) {
+        this(initial, side, side);
     }
 
     /**

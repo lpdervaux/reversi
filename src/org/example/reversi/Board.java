@@ -223,7 +223,7 @@ public class Board {
                 direction.next()
             )
             .filter(c -> board.get(c) == color.tile()) // matches
-            .filter(c -> !c.equals(start)) // encloses at least one tile
-            .findFirst();
+            .findFirst()
+            .filter(c -> !c.equals(start)); // encloses at least one tile
     }
 }
