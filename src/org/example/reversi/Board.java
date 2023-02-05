@@ -7,6 +7,7 @@ import org.example.board.ordinal.OrdinalBoard;
 import java.util.*;
 import java.util.stream.Stream;
 
+
 /**
  * Represents a Reversi board.
  */
@@ -15,32 +16,16 @@ public class Board {
     private final Set<Coordinates> edges;
 
     /**
-     * Constructs a board of {@code width} and {@code height} from {@code list}.
+     * Constructs a board with initial state.
      *
-     * @param list List of exactly {@code width * height} elements
-     * @param width Board width, non-zero positive
-     * @param height Board height, non-zero positive
-     *
-     * @throws IllegalArgumentException If any argument is invalid
+     * @param initial Initial state
      */
-    public Board(List<Tile> list, int width, int height) {
-        this.board = new OrdinalBoard<>(list, width, height);
+    public Board(org.example.board.Board<Tile> initial) {
+        this.board = new OrdinalBoard<>(initial);
 
         var capacity = board.width() * board.height() / 2;
         this.edges = new HashSet<>(capacity);
         initializeEdges();
-    }
-
-    /**
-     * Constructs an equal sided board of {@code side} from {@code list}.
-     *
-     * @param list List of exactly {@code side * side} elements
-     * @param side Board side, non-zero positive
-     *
-     * @throws IllegalArgumentException If any argument is invalid
-     */
-    public Board(List<Tile> list, int side) {
-        this(list, side, side);
     }
 
     /**
