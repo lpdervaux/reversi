@@ -80,7 +80,7 @@ public class OrdinalBoard<T> extends Board<T> {
     }
 
     /**
-     * @return A stream of coordinates spanning the board in increasing row order
+     * @return A stream of coordinates spanning the board in row-major order
      */
     public Stream<Coordinates> traverse() {
         return Stream.iterate(
