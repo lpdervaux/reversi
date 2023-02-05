@@ -13,7 +13,7 @@ import java.util.stream.Stream;
  */
 public class Game {
     static private OrdinalBoard<Tile> buildInitialBoardState(int width, int height) {
-        var initial = new OrdinalBoard<Tile>(Tile.FREE, width, height);
+        var initial = new OrdinalBoard<>(Tile.FREE, width, height);
 
         // set initial center tiles as:
         // w b
@@ -37,7 +37,6 @@ public class Game {
 
     private int turn; // number of turns elapsed
     private Player currentPlayer; // color for current turn
-    private boolean skipped; // was last color's turn skipped? TODO: get rid of this rule
     private boolean over; // is game over?
 
     public Game(int width, int height) throws IllegalArgumentException {
@@ -58,7 +57,6 @@ public class Game {
 
         turn = 1;
         currentPlayer = white;
-        skipped = false;
         over = false;
     }
 
@@ -107,18 +105,17 @@ public class Game {
         currentPlayer.score += enclosed + 1;
         currentPlayer.versus().score -= enclosed;
 
-        if ( board.findAnyValidMove(currentPlayer.versus().color()).isPresent() ) {
-            skipped = false;
+        if (
+            board.findAnyValidMove(
+                    currentPlayer.versus().color()
+                )
+                .isPresent()
+        ) {
             currentPlayer = currentPlayer.versus();
-            turn += 1;
-        }
-        else if ( board.findAnyValidMove(currentPlayer.color()).isPresent() ) {
-            skipped = true;
             turn += 1;
         }
         else {
             over = true;
-            skipped = false;
         }
     }
 
@@ -162,13 +159,6 @@ public class Game {
      */
     public Player currentPlayer() {
         return currentPlayer;
-    }
-
-    /**
-     * @return {@code true} if a player had no valid move after previous turn, {@code false} otherwise
-     */
-    public boolean skipped() {
-        return skipped;
     }
 
     /**
