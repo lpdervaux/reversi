@@ -19,29 +19,8 @@ import java.util.stream.IntStream;
  * A {@code Game} is then created and played to the end.
  */
 public class UserInterface extends org.example.ui.UserInterface {
-    //
-    // static
-    //
-
-    // default size
     static private final int DEFAULT_WIDTH = 8;
     static private final int DEFAULT_HEIGHT = 8;
-
-    // TODO: Tile maps into their own static classes
-    // tile maps
-    static private final Map<Tile, String> DOT_TILE_MAP = Map
-        .ofEntries(
-            Map.entry(Tile.WHITE, "o"),
-            Map.entry(Tile.BLACK, "●"),
-            Map.entry(Tile.FREE, "·")
-        );
-
-    static private final Map<Tile, String> ASCII_TILE_MAP = Map
-        .ofEntries(
-            Map.entry(Tile.WHITE, "w"),
-            Map.entry(Tile.BLACK, "b"),
-            Map.entry(Tile.FREE, ".")
-        );
 
     // TODO: Menus into their own classes, probably static
     // menus
@@ -96,7 +75,7 @@ public class UserInterface extends org.example.ui.UserInterface {
         this.aiActive.put(Color.WHITE, true);
         this.aiActive.put(Color.BLACK, true);
 
-        this.tileMap = DOT_TILE_MAP;
+        this.tileMap = TileMaps.DOT_TILE_MAP;
     }
 
     /**
@@ -315,8 +294,8 @@ public class UserInterface extends org.example.ui.UserInterface {
         var tile = promptUntilMenuChoice("Please select a tile map." + System.lineSeparator(), TILE_MAP_MENU);
 
         switch (tile) {
-            case "a" -> tileMap = ASCII_TILE_MAP;
-            case "d" -> tileMap = DOT_TILE_MAP;
+            case "a" -> tileMap = TileMaps.ASCII_TILE_MAP;
+            case "d" -> tileMap = TileMaps.DOT_TILE_MAP;
         }
     }
 
