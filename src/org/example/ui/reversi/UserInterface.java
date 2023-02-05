@@ -18,11 +18,11 @@ import java.util.stream.IntStream;
  * User may choose board size and tile set, and assign colors to AI or human control.
  * A {@code Game} is then created and played to the end.
  */
+// TODO: move menus into its their own class, compose it into this
 public class UserInterface extends org.example.ui.UserInterface {
     static private final int DEFAULT_WIDTH = 8;
     static private final int DEFAULT_HEIGHT = 8;
 
-    // TODO: Menus into their own classes, probably static
     // menus
     static private final Map<String, String> START_MENU;
     static private final Map<String, String> PLAYER_MENU;
