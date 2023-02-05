@@ -24,6 +24,7 @@ public class Board<T> {
      *
      * @throws IllegalArgumentException If any argument is invalid
      */
+    // TODO: there is no point in providing a source list if coordinates to index translation is implementation dependant
     public Board(List<T> list, int width, int height) throws IllegalArgumentException {
         if (
             width <= 0
