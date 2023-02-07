@@ -174,6 +174,7 @@ public class UserInterface extends org.example.ui.UserInterface {
      *
      * @see #displayState()
      */
+    // TODO: put builder back to itw owm class
     private String buildIndexedGrid() {
         var capacity = (game.getWidth() + 2) * 2 * (game.getHeight() + 1) + 10;
         var builder = new StringBuilder(capacity);

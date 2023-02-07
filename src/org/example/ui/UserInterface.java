@@ -14,8 +14,8 @@ public abstract class UserInterface extends ScannerUserInterface {
      * Prompts for a menu choice until match.
      *
      * @param prompt Prompt to present
-     * @param menu Enumeration class
-     * @return Matching enumeration member
+     * @param menu Map of choices pointing to descriptions
+     * @return Selected choice
      */
     protected String promptUntilMenuChoice(String prompt, Map<String, String> menu) {
         var menuPrompt = new StringBuilder();
@@ -31,7 +31,7 @@ public abstract class UserInterface extends ScannerUserInterface {
     }
 
     /**
-     * Parses input for menu key.
+     * Parses a menu choice from input.
      * Throws a descriptive {@code IllegalArgumentException} for use with {@code promptUntil} if parsing fails.
      * <p>
      * Composed method of {@code promptUntilMenuChoice}.
