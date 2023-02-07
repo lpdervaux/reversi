@@ -3,10 +3,19 @@ package org.example;
 import org.example.reversi.Game;
 import org.example.reversi.ai.RandomAI;
 
+/**
+ * Performs a timed RandomAI match on a static size board.
+ */
 public class AIMatch {
     private static final int SIZE = 128;
 
-    public static long timeRunnable(Runnable runnable) {
+    /**
+     * Times a runnable.
+     *
+     * @param runnable Function to time
+     * @return Time spent within function
+     */
+    private static long timeRunnable(Runnable runnable) {
         var startTime = System.nanoTime();
         runnable.run();
         var endTime = System.nanoTime();
@@ -14,7 +23,12 @@ public class AIMatch {
         return endTime - startTime;
     }
 
-    public static void runAIGame(Game game) {
+    /**
+     * Has RandomAI play a game to completion.
+     *
+     * @param game Game to play
+     */
+    private static void runAIGame(Game game) {
         do {
             game.nextMove(RandomAI.nextMove(game));
         } while ( !game.isOver() );
