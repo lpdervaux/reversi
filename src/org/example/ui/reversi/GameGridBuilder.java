@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
  * StringBuilder implementation for creating the indexed game grid.
  */
 /*
-    The previous simple implementation using String.format with Collectors.joining was unacceptably slow as it would overflow the JVM String pool for large grids.
+    The previous implementation using String.format with Collectors.joining was unacceptably slow as it would overflow the JVM String pool for large grids.
     Note that even using a more efficient grid builder, large console IO itself seems to be a significant bottleneck.
  */
 class GameGridBuilder {
@@ -31,9 +31,9 @@ class GameGridBuilder {
         this.game = game;
         this.tileMap = tileMap;
 
-        // in case of double char unicode tile map, this guess for initial capacity would require a single buffer extension
-        var line_capacity = game.getWidth() * 2 + 6; // deliberate extra buffer
-        var line_count = game.getHeight() + 2; // deliberate extra buffer
+        // in case of double char unicode tile map, this initial capacity would require a single buffer extension
+        var line_capacity = game.getWidth() * 2 + 6; // (y index column = 2) + (width columns * 2) + (line separator = 2 maximum?) + (deliberate +2 extra buffer)
+        var line_count = game.getHeight() + 2; // (header) + (rows) + (deliberate +1 extra buffer)
 
         this.builder = new StringBuilder(line_capacity * line_count);
 
