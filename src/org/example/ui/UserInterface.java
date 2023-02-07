@@ -9,30 +9,6 @@ import java.util.NoSuchElementException;
  */
 public abstract class UserInterface extends ScannerUserInterface {
     /**
-     * Parses a signed integer from input.
-     * Throws a descriptive {@code IllegalArgumentException} for use with {@code promptUntil} if parsing fails.
-     *
-     * @param input Input to parse
-     * @return Signed integer
-     *
-     * @throws IllegalArgumentException If not a number
-     */
-    static public int intParser(String input) {
-        int i;
-
-        try {
-            i = Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(
-                String.format("Not an integer (%s)", input),
-                e
-            );
-        }
-
-        return i;
-    }
-
-    /**
      * Prompts for a menu choice until match.
      *
      * @param prompt Prompt to present
@@ -116,5 +92,29 @@ public abstract class UserInterface extends ScannerUserInterface {
             throw new IOError(e); // System.in is closed or otherwise unusable
         }
         return s;
+    }
+
+    /**
+     * Parses a signed integer from input.
+     * Throws a descriptive {@code IllegalArgumentException} for use with {@code promptUntil} if parsing fails.
+     *
+     * @param input Input to parse
+     * @return Signed integer
+     *
+     * @throws IllegalArgumentException If not a number
+     */
+    static public int intParser(String input) {
+        int i;
+
+        try {
+            i = Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(
+                String.format("Not an integer (%s)", input),
+                e
+            );
+        }
+
+        return i;
     }
 }
