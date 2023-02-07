@@ -6,13 +6,16 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Component of {@code UserInterface}.
+ * Player menu component of {@code StartMenu}.
  */
 class PlayerMenu extends UserInterfaceSubordinate {
+    static private final boolean DEFAULT_AI_WHITE = true;
+    static private final boolean DEFAULT_AI_BLACK = true;
+
     static private final Map<String, String> PLAYER_MENU;
 
     static {
-        PLAYER_MENU = new LinkedHashMap<>(2, 1.0f); // LinkedHashMap to preserve iteration order
+        PLAYER_MENU = new LinkedHashMap<>(2, 1.0f);
         PLAYER_MENU.put("h", "Human");
         PLAYER_MENU.put("a", "AI");
     }
@@ -22,8 +25,8 @@ class PlayerMenu extends UserInterfaceSubordinate {
 
     public PlayerMenu(UserInterface main) {
         super(main);
-        whiteAIActive = false;
-        blackAIActive = true;
+        whiteAIActive = DEFAULT_AI_WHITE;
+        blackAIActive = DEFAULT_AI_BLACK;
     }
 
     /**
@@ -49,7 +52,7 @@ class PlayerMenu extends UserInterfaceSubordinate {
     }
 
     /**
-     * Prompts for a single player setting.
+     * Prompts for a player AI setting.
      *
      * @param prompt Prompt to display
      * @return {@code true} for AI controlled, {@code false} otherwise
