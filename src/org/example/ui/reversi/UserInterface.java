@@ -369,7 +369,7 @@ public class UserInterface extends org.example.ui.UserInterface {
      * @see #promptForNextMove()
      */
     private int coordinateParser(String input, int limit) {
-        int x = intParser(input);
+        int x = org.example.ui.UserInterface.intParser(input);
         if ( x < 0 || x >= limit ) throw new IllegalArgumentException(
             String.format("%d is not within the board", x)
         );
@@ -391,41 +391,12 @@ public class UserInterface extends org.example.ui.UserInterface {
      * @see #promptAndChangeBoardSize()
      */
     private int sizeParser(String input) {
-        int size = intParser(input);
+        int size = org.example.ui.UserInterface.intParser(input);
         if ( size < 4 || size % 2 != 0 ) throw new IllegalArgumentException(
             String.format("Size must be a multiple of 2 greater than or equal to 4 (%d)", size)
         );
 
         return size;
-    }
-
-    /**
-     * Parses a signed integer from input.
-     * Throws a descriptive {@code IllegalArgumentException} for use with {@code promptUntil} if parsing fails.
-     * <p>
-     * Composed function of {@code sizeParser} and {@code coordinateParser}.
-     *
-     * @param input Input to parse
-     * @return Signed integer
-     *
-     * @throws IllegalArgumentException If not a number
-     *
-     * @see #sizeParser(String)
-     * @see #coordinateParser(String, int)
-     */
-    private int intParser(String input) {
-        int i;
-
-        try {
-            i = Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(
-                String.format("Not an integer (%s)", input),
-                e
-            );
-        }
-
-        return i;
     }
 
     //

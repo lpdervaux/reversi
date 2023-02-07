@@ -8,7 +8,29 @@ import java.util.NoSuchElementException;
  * Extends {@code ScannerUserInterface} with generic user interface methods.
  */
 public abstract class UserInterface extends ScannerUserInterface {
-    protected UserInterface() {}
+    /**
+     * Parses a signed integer from input.
+     * Throws a descriptive {@code IllegalArgumentException} for use with {@code promptUntil} if parsing fails.
+     *
+     * @param input Input to parse
+     * @return Signed integer
+     *
+     * @throws IllegalArgumentException If not a number
+     */
+    static public int intParser(String input) {
+        int i;
+
+        try {
+            i = Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(
+                String.format("Not an integer (%s)", input),
+                e
+            );
+        }
+
+        return i;
+    }
 
     /**
      * Prompts for a menu choice until match.
