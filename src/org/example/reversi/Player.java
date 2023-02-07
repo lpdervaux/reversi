@@ -9,7 +9,7 @@ public class Player {
     protected int score; // score
 
     // should only be instantiated by Game
-    protected Player(Color color, int score) {
+    Player(Color color, int score) {
         this.color = color;
         this.score = score;
     }
