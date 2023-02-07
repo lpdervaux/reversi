@@ -28,5 +28,5 @@ Implementation of Reversi with an accompanying simple text interface; demonstrat
   
 * `org.example`
   
-  Contains a `Main` class with an entry point for the text interface and an `AIMatch` benchmark class
+  Contains a `StartUI` class with an entry point for the text interface and an `AIMatch` benchmark class
   
