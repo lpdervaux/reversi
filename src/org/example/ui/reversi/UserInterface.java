@@ -68,11 +68,12 @@ public class UserInterface extends org.example.ui.UserInterface {
      * @see #displayTurnState()
      * @see #displayFinalState()
      */
-    // TODO: Console IO is a bottleneck for large board size, add an option to only display turns or only final result for AI matches
     private void displayGameState() {
-        System.out.println(
-            new GameGridBuilder(game, startMenu.getTileMapMenu().getTileMap())
-        );
+        if ( startMenu.getDisplayMenu().isGridDisplay() )
+            System.out.println(
+                new GameGridBuilder(game, startMenu.getTileMapMenu().getTileMap())
+            );
+
         System.out.printf(
             "Turn %d (W %d B %d)%n",
             game.getTurn(), game.getWhite().getScore(), game.getBlack().getScore()
@@ -118,10 +119,12 @@ public class UserInterface extends org.example.ui.UserInterface {
      */
     private void inputLoop() {
         do {
-            displayTurnState();
+            if ( startMenu.getDisplayMenu().isTurnDisplay() )
+                displayTurnState();
 
             Coordinates nextMove = queryNextMove();
-            displaySelectedMove(nextMove);
+            if ( startMenu.getDisplayMenu().isTurnDisplay() )
+                displaySelectedMove(nextMove);
 
             game.nextMove(nextMove);
         } while ( !game.isOver() );

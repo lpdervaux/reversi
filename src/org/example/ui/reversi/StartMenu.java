@@ -13,22 +13,25 @@ class StartMenu extends UserInterfaceSubordinate {
     static private final Map<String, String> START_MENU;
 
     static {
-        START_MENU = new LinkedHashMap<>(4, 1.0f);
+        START_MENU = new LinkedHashMap<>(5, 1.0f);
         START_MENU.put("b", "Board size");
         START_MENU.put("p", "Players");
         START_MENU.put("t", "Tile map");
+        START_MENU.put("d", "Display");
         START_MENU.put("s", "Start");
     }
 
     private final SizeMenu sizeMenu;
     private final PlayerMenu playerMenu;
     private final TileMapMenu tileMapMenu;
+    private final DisplayMenu displayMenu;
 
     public StartMenu(UserInterface main) {
         super(main);
         this.sizeMenu = new SizeMenu(main);
         this.playerMenu = new PlayerMenu(main);
         this.tileMapMenu = new TileMapMenu(main);
+        this.displayMenu = new DisplayMenu(main);
     }
 
     /**
@@ -53,6 +56,13 @@ class StartMenu extends UserInterfaceSubordinate {
     }
 
     /**
+     * @return Display menu
+     */
+    public DisplayMenu getDisplayMenu() {
+        return displayMenu;
+    }
+
+    /**
      * Prompts user for settings until start is chosen.
      */
     public void promptUntilStart() {
@@ -64,6 +74,7 @@ class StartMenu extends UserInterfaceSubordinate {
                 case "b" -> sizeMenu.prompt();
                 case "p" -> playerMenu.prompt();
                 case "t" -> tileMapMenu.prompt();
+                case "d" -> displayMenu.prompt();
             }
         } while ( !choice.equals("s") );
     }
@@ -81,12 +92,14 @@ class StartMenu extends UserInterfaceSubordinate {
                     Board: %d x %d
                     Players: White (%s) Black (%s)
                     Tiles: %s
+                    Display: Grid %s Turn %s
                     """,
                 sizeMenu.getWidth(), sizeMenu.getHeight(),
                 playerMenu.isWhiteAIActive() ? "AI" : "Human", playerMenu.isBlackAIActive() ? "AI" : "Human",
                 tileMapMenu.getTileMap().values().stream()
                     .map(s -> String.format("%s ", s))
-                    .collect(Collectors.joining())
+                    .collect(Collectors.joining()),
+                displayMenu.isGridDisplay() ? "ON" : "OFF", displayMenu.isTurnDisplay() ? "ON" : "OFF"
             ),
             START_MENU
         );
