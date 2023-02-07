@@ -5,8 +5,6 @@ import org.example.reversi.Color;
 import org.example.reversi.Game;
 import org.example.reversi.ai.RandomAI;
 
-import java.util.stream.IntStream;
-
 /**
  * Simple text interface for Reversi.
  * <p>
@@ -30,8 +28,8 @@ public class UserInterface extends org.example.ui.UserInterface {
      */
     public void start() {
         displayStartupMessage();
-
         startMenu.promptUntilStart();
+
         game = new Game(
             startMenu.getSizeMenu().getWidth(),
             startMenu.getSizeMenu().getHeight()
@@ -39,10 +37,6 @@ public class UserInterface extends org.example.ui.UserInterface {
 
         inputLoop();
     }
-
-    //
-    // Display related methods
-    //
 
     /**
      * Displays startup message.
@@ -125,42 +119,8 @@ public class UserInterface extends org.example.ui.UserInterface {
      *
      * @see #displayState()
      */
-    // TODO: put builder back to its own class
     private String buildIndexedGrid() {
-        var capacity = (game.getWidth() + 2) * 2 * (game.getHeight() + 1) + 10;
-        var builder = new StringBuilder(capacity);
-
-        // header
-        builder.append("  ");
-        IntStream.range(0, game.getWidth())
-            .forEachOrdered(
-                x -> {
-                    builder.append(x % 10);
-                    builder.append(" ");
-                }
-            );
-        builder.append(System.lineSeparator());
-
-        // rows
-        IntStream.range(0, game.getHeight())
-            .forEachOrdered(
-                y -> {
-                    builder.append(y % 10);
-                    builder.append(" ");
-
-                    game.getRow(y)
-                        .forEachOrdered(
-                            t -> {
-                                builder.append(startMenu.getTileMapMenu().getTileMap().get(t));
-                                builder.append(" ");
-                            }
-                        );
-
-                    builder.append(System.lineSeparator());
-                }
-            );
-
-        return builder.toString();
+        return new GameGridBuilder(game, startMenu.getTileMapMenu().getTileMap()).toString();
     }
 
 
