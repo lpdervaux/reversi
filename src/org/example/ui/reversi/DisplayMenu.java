@@ -5,6 +5,9 @@ import org.example.ui.UserInterfaceSubordinate;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Display menu component of {@code StartMenu}.
+ */
 public class DisplayMenu extends UserInterfaceSubordinate {
     static private final boolean DEFAULT_GRID_DISPLAY = true;
     static private final boolean DEFAULT_TURN_DISPLAY = true;
@@ -27,14 +30,23 @@ public class DisplayMenu extends UserInterfaceSubordinate {
         this.turnDisplay = DEFAULT_TURN_DISPLAY;
     }
 
+    /**
+     * @return {@code true} if grid display is active, {@code false} otherwise
+     */
     public boolean isGridDisplay() {
         return gridDisplay;
     }
 
+    /**
+     * @return {@code true} if turn display is active, {@code false} otherwise
+     */
     public boolean isTurnDisplay() {
         return turnDisplay;
     }
 
+    /**
+     * Prompts user for display settings.
+     */
     public void prompt() {
         var display = promptUntilMenuChoice(
             "Please select a display option." + System.lineSeparator(),
