@@ -28,14 +28,16 @@ public class UserInterface extends org.example.ui.UserInterface {
      */
     public void start() {
         displayStartupMessage();
+
         startMenu.promptUntilStart();
 
         game = new Game(
             startMenu.getSizeMenu().getWidth(),
             startMenu.getSizeMenu().getHeight()
         );
-
         inputLoop();
+
+        displayFinalState();
     }
 
     /**
@@ -49,36 +51,58 @@ public class UserInterface extends org.example.ui.UserInterface {
     }
 
     /**
-     * Displays game state followed by current player.
-     * Called for every iteration of {@code gameInputLoop}.
-     *
-     * @see #inputLoop()
-     */
-    private void displayCurrentState() {
-        displayState();
-        System.out.printf("Player: %s%n", game.getCurrentPlayer().getColor());
-    }
-
-    /**
-     * Displays next move.
-     * Called for every iteration of {@code gameInputLoop}.
+     * Displays selected move.
+     * Called for every iteration of {@code inputLoop}.
      *
      * @param move Next move
      *
      * @see #inputLoop()
      */
-    private void displayNextMove(Coordinates move) {
+    private void displaySelectedMove(Coordinates move) {
         System.out.printf("Move: [%d, %d]%n", move.x(), move.y());
     }
 
     /**
+     * Displays game state as indexed grid, turn count and score.
+     *
+     * @see #displayTurnState()
+     * @see #displayFinalState()
+     */
+    // TODO: Console IO is a bottleneck for large board size, add an option to only display turns or only final result for AI matches
+    private void displayGameState() {
+        System.out.println(
+            new GameGridBuilder(game, startMenu.getTileMapMenu().getTileMap())
+        );
+        System.out.printf(
+            "Turn %d (W %d B %d)%n",
+            game.getTurn(), game.getWhite().getScore(), game.getBlack().getScore()
+        );
+    }
+
+    /**
+     * Displays game state followed by current player.
+     * Called for every iteration of {@code inputLoop}.
+     *
+     * @see #inputLoop()
+     */
+    private void displayTurnState() {
+        System.out.println(); // separator
+
+        displayGameState();
+
+        System.out.printf("Player: %s%n", game.getCurrentPlayer().getColor());
+    }
+
+    /**
      * Displays game state followed by winner.
-     * Called by {@code gameInputLoop} after game ends.
+     * Called once after game ends.
      *
      * @see #inputLoop()
      */
     private void displayFinalState() {
-        displayState();
+        System.out.println(); // separator
+
+        displayGameState();
 
         if ( game.getWhite().getScore() == game.getBlack().getScore() )
             System.out.println("Draw");
@@ -90,43 +114,39 @@ public class UserInterface extends org.example.ui.UserInterface {
     }
 
     /**
-     * Displays game state as indexed grid, turn count and score.
-     * <p>
-     * Composed function of {@code displayCurrentState} and {@code displayFinalState}.
-     *
-     * @see #displayCurrentState()
-     * @see #displayFinalState()
+     * Displays game state, queries and executes a move until {@code game} ends, then displays final state.
      */
-    // TODO: Console IO is a bottleneck for large board size, add an option to only display turns or only final result for AI matches
-    private void displayState() {
-        System.out.println(buildIndexedGrid());
-        System.out.printf(
-            "Turn %d (W %d B %d)%n",
-            game.getTurn(), game.getWhite().getScore(), game.getBlack().getScore()
-        );
-    }
+    private void inputLoop() {
+        do {
+            displayTurnState();
 
-    //
-    // String building methods for use with display methods
-    //
+            Coordinates nextMove = queryNextMove();
+            displaySelectedMove(nextMove);
+
+            game.nextMove(nextMove);
+        } while ( !game.isOver() );
+    }
 
     /**
-     * Builds a {@code String} representing the game board as a single-digit indexed grid.
-     * <p>
-     * Composed function of {@code displayState}.
+     * Queries either human or AI for the next move depending on the {@code aiActive} status for current player's {@code Color}.
      *
-     * @return Game board as string
-     *
-     * @see #displayState()
+     * @return Coordinates of next move
      */
-    private String buildIndexedGrid() {
-        return new GameGridBuilder(game, startMenu.getTileMapMenu().getTileMap()).toString();
+    private Coordinates queryNextMove() {
+        Coordinates nextMove;
+
+        if (
+            game.getCurrentPlayer().getColor() == Color.WHITE && startMenu.getPlayerMenu().isWhiteAIActive()
+                || game.getCurrentPlayer().getColor() == Color.BLACK && startMenu.getPlayerMenu().isBlackAIActive()
+        ) {
+            nextMove = RandomAI.nextMove(game); // demo only supports RandomAI
+        }
+        else {
+            nextMove = promptForNextMoveUntilValid();
+        }
+
+        return nextMove;
     }
-
-
-    //
-    // Prompt related methods
-    //
 
     /**
      * Prompts for a move until a valid move for the current game state is input.
@@ -163,10 +183,6 @@ public class UserInterface extends org.example.ui.UserInterface {
         return new Coordinates(x, y);
     }
 
-    //
-    // Parser methods for use with prompt methods
-    //
-
     /**
      * Parses a coordinate from input.
      * Throws a descriptive {@code IllegalArgumentException} for use with {@code promptUntil} if parsing fails.
@@ -181,55 +197,12 @@ public class UserInterface extends org.example.ui.UserInterface {
      *
      * @see #promptForNextMove()
      */
-    private int coordinateParser(String input, int limit) {
+    static private int coordinateParser(String input, int limit) {
         int x = org.example.ui.UserInterface.intParser(input);
         if ( x < 0 || x >= limit ) throw new IllegalArgumentException(
             String.format("%d is not within the board", x)
         );
 
         return x;
-    }
-
-    //
-    // Input loop and query methods
-    //
-
-    /**
-     * Displays game state, queries and executes a move until {@code game} ends, then displays final state.
-     */
-    private void inputLoop() {
-        do {
-            System.out.println(); // blank line separator
-            displayCurrentState();
-
-            Coordinates nextMove = queryNextMove();
-            displayNextMove(nextMove);
-
-            game.nextMove(nextMove);
-        } while ( !game.isOver() );
-
-        System.out.println(); // blank line separator
-        displayFinalState();
-    }
-
-    /**
-     * Queries either human or AI for the next move depending on the {@code aiActive} status for current player's {@code Color}.
-     *
-     * @return Coordinates of next move
-     */
-    private Coordinates queryNextMove() {
-        Coordinates nextMove;
-
-        if (
-            game.getCurrentPlayer().getColor() == Color.WHITE && startMenu.getPlayerMenu().isWhiteAIActive()
-            || game.getCurrentPlayer().getColor() == Color.BLACK && startMenu.getPlayerMenu().isBlackAIActive()
-        ) {
-            nextMove = RandomAI.nextMove(game); // demo only supports RandomAI
-        }
-        else {
-            nextMove = promptForNextMoveUntilValid();
-        }
-
-        return nextMove;
     }
 }
