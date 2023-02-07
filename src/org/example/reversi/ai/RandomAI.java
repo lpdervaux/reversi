@@ -12,10 +12,12 @@ public class RandomAI {
     // non-instantiable
     private RandomAI() {}
 
+    // Maximum number of moves to search for before picking one at random
+    // Low value may cause obvious bias on very large grids
     static private final int LIMIT = 10;
 
     /**
-     * Selects a random valid move for a game. Searches for up to 10 moves.
+     * Selects a random valid move for a game. Searches for up to {@code LIMIT} moves.
      *
      * @param game Game to compute next move for
      * @return Random valid move
@@ -26,6 +28,7 @@ public class RandomAI {
         if ( game.isOver() ) throw new IllegalArgumentException();
 
         var moves = game.findValidMoves()
+            .unordered()
             .limit(LIMIT)
             .toList();
 
